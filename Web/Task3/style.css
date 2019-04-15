@@ -1,0 +1,435 @@
+
+/* Задает стиль текста на всей странице */
+body {
+	font-size: 16px;
+	font-family: Arial, serif;
+}
+
+h2{
+	font-family: 'Russo One',sans-sherif;
+	font-size: 37px;
+	padding:20px 20px;
+	text-align: center;
+	bottom: 0px;
+	color:red;
+}
+
+p{
+	font-size: 18px;
+}
+/* Фиксирует размер контейнера в каждой секции и центрирует на странице */
+section .container {
+	width: 100%;
+
+	margin:0 auto;
+}
+
+section.menu {
+	/* Меняет фон секции с меню */
+	background:red;	
+	padding-top: 12px;
+	padding-bottom: 12px;
+
+	/* Центрирует неблочный контент (тег a) по центру родительского блочного элемента (div) */
+	text-align: center;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: 10;
+	text-decoration: none;
+
+}
+
+section.menu .link{
+	display: inline-block;
+}
+
+section.menu .link:hover{
+	color:gray;
+
+}
+section.menu a{
+    color:white;
+    margin: 20px;
+    font-size: 20px;
+    text-decoration: none;
+    font-family: 'Russo One',sans-sherif;
+}
+
+section.menu a:hover{
+	color:gray;
+}
+section.menu a:hover > i{
+	color:gray;
+}
+
+
+section.menu i{
+	color:white;
+	padding-right: 5px;
+
+	/*padding-right: 5px;*/
+}
+
+/*section.menu i:hover{
+	color:gray;
+}
+*/
+section.header {
+	/* Меняет фон секции с заголовком */
+	background: #EFEFEF;
+    
+    margin-bottom: 40px;
+    position: relative;
+    
+}
+
+
+/* Растягивает ширину любой картинки на 100% от ширины родительского блока (т.е. container), 
+все изображения будут пропорционально увеличены до 1000px ширины */
+
+/*----------------------------------------------------------------*/
+section.header img#first {
+	width: 100%;
+    max-height: 800px;
+    opacity: 0.5;
+	animation: 10s infinite;
+	animation-name: test;
+	
+	transform: translateX(0%);
+
+	
+}
+
+@keyframes test{
+	0% {opacity: 0.5;}
+	50%{opacity: 0;}
+	100%{opacity: 0.5;}
+}
+
+
+
+@keyframes test2{
+	0% {opacity: 0;}
+	50%{opacity: 0.5;}
+	100%{opacity: 0;}
+}
+
+section.header img#second {
+	width: 100%;
+    max-height: 800px;
+    opacity: 0;
+	animation: 10s test2 infinite;
+
+	position: absolute;
+	z-index: 2;
+	top:0;
+}
+
+
+
+/*@keyframes test2{
+	from{transform: translateX(-100%);}
+	to{transform: translateX(0);}
+}
+*/
+#mask {
+    background-color:rgba(0,0,0);
+    height:100%;
+    z-index: 10;
+    width:100%;
+}
+
+
+section.header h1{
+    position: absolute;
+    bottom: 10%;
+    left: 10%;
+    font-size: 55px;
+    color: white;
+    line-height: 60px;
+    font-family: 'Russo One',sans-sherif;
+    z-index: 4;
+}
+
+
+/*---------------------------------------------------*/
+section.desc{
+    width: 70%;
+    margin: 0 auto;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+	margin-top: 20px;
+	padding-bottom: 20px;
+    position: relative;
+}
+
+
+
+section.desc h2{
+    font-size: 36px;
+	line-height: 40px;
+	padding: 16px 0;
+	color:red;
+}
+
+
+section.desc article{
+    display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+section.desc article > div:last-child{
+    max-width: 60%;
+}
+
+
+section.desc article img{
+		transition-delay: 0.2s;
+	transition-duration: 2.5s; 
+	width: 100%;
+	height: auto;
+	padding: 10px;
+	margin: auto;
+	padding-top: 60px;
+
+}
+
+section.desc article img:hover{
+	transform: scale(2) translateX(35%);
+	transition-delay: 0.2s;
+	transition-duration: 2.5s; 
+	
+}
+
+section.desc article h3{
+	font-size: 24px;
+	line-height: 25px;
+	margin: 16px 0 10px;
+	padding: 0 30px;
+	font-weight: bold;
+	color:red;
+
+}
+section.desc article p{
+	padding: 0 30px 10px;
+	font-size: 18px;
+	line-height: 1.5;
+}
+
+
+section.desc#right img{
+    width: 95%;
+	padding: 10px;
+	margin: auto;
+	display: block;
+	padding-top: 30px;
+	
+}
+
+section.desc#right img:hover{
+	transform: scale(2) translateX(-35%);
+	transition-delay: 0.2s;
+	transition-duration: 2.5s; 
+	
+}
+
+section.desc#right article{
+	display: flex;
+	flex-direction: row-reverse;
+	justify-content: space-between;
+}
+
+
+section.desc #battery{
+    width: 250px;
+    height: 250px;
+/*    margin: 0 25%;*/
+    display: block;
+    position: absolute;
+    left: 10%;
+    
+}
+
+/*-----------------------------------------------------------*/
+
+section.imgs{
+    width: 70%;
+    margin: 3% auto;
+/*    height: 620px; */
+    height: 200px;
+    margin-bottom: 5%;
+}
+
+section.imgs img{
+    height: 150px;
+    width: 150px;
+    display: block;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+/*Изменяем height до 760*/
+section.imgs .company{
+    position: relative;
+	height: 400px;
+    
+	float: left;
+	width: 30%;
+	margin: 15px;
+	padding-top: 25px;
+	box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+/*
+section.imgs .company:hover{
+    animation: 3s popup 1;
+    border: 2px red solid;
+}
+
+@keyframes popup{
+    from{height: 240px};
+    to{height: 760px;}
+}
+*/
+
+
+section.imgs .company  article{
+	text-align: center;
+    position: absolute;
+}
+.company h2{
+	padding: 46px 0;
+	color:red;
+}
+
+.company h3{
+	font-size: 32px;
+	line-height: 30px;
+	padding: 16px 0;	
+	color:red;
+}
+section.imgs .company p
+{
+/*	font-size: 18px;*/
+    font-size: 150%;
+	line-height: 30px;
+	margin: 16px 0 10px;
+	padding: 0 16px;
+    
+}
+/*-----------------------------------------------------------*/
+
+.video{
+
+    width: 80%;
+    margin:0 auto;
+    
+ 	margin-top: 18%;
+ 	margin-bottom: 2%;
+}
+
+.video h2{
+	padding-top: 30px;
+	margin-bottom: 20px;
+	color:red;
+}
+/*----------------------------------------------------------*/
+
+
+
+
+
+
+/*----------------------------------------------------------*/
+
+#3e3e3e
+
+section.about{
+
+	width: 100%;
+	height: 100px;
+	align-content: bottom;
+}
+
+section.about article
+{
+
+    background: #222222;
+
+    
+    align-items: center;
+    align-content: center; 
+
+	text-decoration: none;
+    
+    
+
+}
+
+section.about{
+
+	position: relative;
+    width: 100%;
+}
+
+section.about article{
+
+	padding-left: 10%;
+	
+}
+
+section.about .footer{
+	display: inline-block;
+	
+	margin-left: 50px;
+	position: absolute;
+	top:30px;
+}
+section.about img{
+	
+	width: 72px;
+	height: 100px;
+}
+
+section.about p{
+	color: white;
+    font-family: 'Arial',sans-sherif;
+    font-size: 20px;
+}
+
+/*-----------------------------icon----------------------------*/
+
+.about .fa-stack{
+	color: white; 
+	display: inline-block;
+	float: right;
+	position: relative;
+	top: 10px;
+	right: 62%;
+}
+
+.about .fa-stack .fa-chrome{
+	position: absolute;
+	font-size: 90px;
+	top: 3px;
+	right: 14px;
+	color: yellow;
+}
+
+.about .fa-stack .fa-android{
+	position: absolute;
+	font-size: 30px;
+	top: 12px;
+	right: 10px;
+	color: green;
+}
+
+.about .fa-stack .fa-google{
+	position: absolute; 
+	font-size: 90px;
+	top: 3px; 
+	right:15px;
+	opacity: 1;
+	color: red;
+}

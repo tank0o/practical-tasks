@@ -1,0 +1,69 @@
+/*
+
+/*---------*/
+
+.disappearance1{
+    animation: 3s disappearance1 infinite;
+    transform-origin: 50% 50%;
+}
+
+@keyframes disappearance1{
+    0%{
+        transform: rotate(0deg);
+    }
+    50%{
+        transform: rotate(360deg);}
+    100%{
+        transform: rotate(0deg);
+    }
+}
+
+.disappearance2{
+    animation: 3s disappearance2 infinite;
+    transform-origin: 50% 50%;
+}
+
+@keyframes disappearance2{
+    0%{
+        transform: rotate(0deg);
+    }
+    50%{
+        transform: rotate(-360deg);}
+    100%{
+        transform: rotate(0deg);
+    }
+}
+
+.wheel{
+    animation: 3s moving infinite;
+    
+}
+
+@keyframes moving{
+    0%{
+		opacity: 1;
+    }
+    50%{
+        opacity: 0.2;
+		}
+    100%{
+        transform: rotate(0);
+    }
+}
+
+.size{
+    animation: 3s size infinite;
+    
+}
+
+@keyframes size{
+    0%{
+		transform: scale(1.0);
+    }
+    50%{
+        transform: scale(1.4);
+		}
+    100%{
+        transform: scale(1.0);
+    }
+}
