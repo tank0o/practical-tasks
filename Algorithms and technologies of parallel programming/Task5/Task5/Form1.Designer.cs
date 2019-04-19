@@ -677,8 +677,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(553, 451);
             this.Controls.Add(this.TabControl);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Task5 Filitsin Andrew";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.TabControl.ResumeLayout(false);
             this.TabPageFilter.ResumeLayout(false);
