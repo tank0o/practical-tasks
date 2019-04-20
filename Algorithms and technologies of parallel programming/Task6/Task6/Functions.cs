@@ -17,11 +17,19 @@ namespace Task6
     class Functions
     {
         public delegate double CalculateMethod(Func<double, double> function, double a, double b, int n);
+        public delegate double SolveMethod(Func<double, double> function, double a, double b, double eps, out int k);
 
         public static TaskResult CalculateIntegral(string MethodName, CalculateMethod Method, Func<double, double> function, double a, double b, int n)
         {
             double x = Method(function, a, b, n);
             return new TaskResult { FileName = MethodName + ".txt", MethodName = MethodName, Result = x, StepCount = n };
+        }
+
+        public static TaskResult SolveEquation(string MethodName, SolveMethod Method, Func<double, double> function, double a, double b, double eps)
+        {
+            int k;
+            double x = Method(function, a, b, eps, out k);
+            return new TaskResult { FileName = MethodName + ".txt", MethodName = MethodName, Result = x, StepCount = k };
         }
 
         public static void WriteResultsToFile(Task<TaskResult> task)
@@ -63,15 +71,6 @@ namespace Task6
             return result;
         }
 
-        public delegate double SolveMethod(Func<double, double> function, double a, double b, double eps, out int k);
-
-        public static TaskResult SolveEquation(string MethodName, SolveMethod Method, Func<double, double> function, double a, double b, double eps)
-        {
-            int k;
-            double x = Method(function, a, b, eps, out k);
-            return new TaskResult { FileName = MethodName + ".txt", MethodName = MethodName, Result = x, StepCount = k };
-        }
-
         static double FirstDerivativeFunction(Func<double, double> function, double x)
         {
             double h = 1e-6;
@@ -108,15 +107,8 @@ namespace Task6
 
         public static double Newton(Func<double, double> function, double a, double b, double eps, out int k)
         {
-            double x = 0, x1 = 0;
-            if (function(b) * SecondDerivativeFunction(function, b) > 0)
-            {
-                x1 = b;
-            }
-            else
-            {
-                x1 = a;
-            }
+            double x = a, x1 = 0;
+            x1 = x - function(x) / FirstDerivativeFunction(function, x);
             k = 0;
             do
             {
@@ -124,6 +116,7 @@ namespace Task6
                 x = x1;
                 x1 = x - function(x) / FirstDerivativeFunction(function, x);
             } while (Math.Abs(x1 - x) > eps);
+            Console.WriteLine(k);
             Console.WriteLine("Метод Ньютона завершен");
             return x1;
         }

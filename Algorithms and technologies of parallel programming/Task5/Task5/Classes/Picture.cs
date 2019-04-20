@@ -53,7 +53,6 @@ namespace Task5.Classes
                 GenerateExtendedPicture();
             }
         }
-
         public void NewPicture(string path_)
         {
             path = path_;
@@ -77,12 +76,14 @@ namespace Task5.Classes
                     picture[n, m] = imgMap.GetPixel(n, m);
             GenerateExtendedPicture();
         }
-
         void GenerateExtendedPicture()
         {
             if (filter == null) return;
             int expandRow = filter.GetN / 2;
             int expandCol = filter.GetM / 2;
+
+            int pictureRow = picture.GetLength(0);
+            int pictureCol = picture.GetLength(1);
 
             extendedPicture = new Color[
                 picture.GetLength(0) + 2 * expandRow,
@@ -91,7 +92,35 @@ namespace Task5.Classes
             for (int i = 0; i < picture.GetLength(0); i++)
                 for (int j = 0; j < picture.GetLength(1); j++)
                     extendedPicture[i + expandRow, j + expandCol] = picture[i, j];
+
+            for (int i = 0; i < extendedPicture.GetLength(0); i++)
+            {
+                for (int j = 0; j < extendedPicture.GetLength(1); j++)
+                {
+                    if ((i < expandRow || i > expandRow + pictureRow) && (j < expandCol || j > expandCol + pictureCol))
+                    {
+                        extendedPicture[i, j] = Color.Black;
+                    }
+                    else if (i < expandRow && (j<expandCol || j > pictureCol + expandCol))
+                    {
+                        extendedPicture[i, j] = picture[i - expandRow -1 , 0];
+                    }
+                    else if (i > expandRow + pictureRow - 1 && (j < expandCol || j > pictureCol + expandCol))
+                    {
+                        extendedPicture[i, j] = picture[i - expandRow-1, pictureCol - 1];
+                    }
+                    else if (j < expandCol && (i < expandRow || i > pictureRow + expandRow))
+                    {
+                        extendedPicture[i, j] = picture[0, j - expandCol -1];
+                    }
+                    else if (j < expandCol && (i < expandRow || i > pictureRow + expandRow))
+                    {
+                        extendedPicture[i, j] = picture[pictureRow - 1, j - expandCol -1];
+                    }
+                }
+            }
         }
+
 
         static public Picture[] NewPictures(string[] path_, Filter filter_)
         {
@@ -109,7 +138,6 @@ namespace Task5.Classes
             });
             return result;
         }
-
         static public Image GetImage(Color[,] picture)
         {
             Bitmap bm = new Bitmap(picture.GetLength(0), picture.GetLength(1));

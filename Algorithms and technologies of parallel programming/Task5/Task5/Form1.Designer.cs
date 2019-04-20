@@ -213,7 +213,7 @@
             this.FilterFiltersComboBox.Items.AddRange(new object[] {
             "Gauss",
             "Sharp",
-            "Random"});
+            "MyFilter"});
             this.FilterFiltersComboBox.Location = new System.Drawing.Point(7, 18);
             this.FilterFiltersComboBox.Name = "FilterFiltersComboBox";
             this.FilterFiltersComboBox.Size = new System.Drawing.Size(341, 21);

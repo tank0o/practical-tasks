@@ -213,8 +213,6 @@ namespace Task5
                 SettingsImagesPathTB.Text = imagesPath;
 
                 source = new CancellationTokenSource();
-                ops.CancellationToken = source.Token;
-
                 BackgroundWorker backgroundWorkerFiles = new BackgroundWorker();
                 backgroundWorkerFiles.WorkerSupportsCancellation = true;
                 backgroundWorkerFiles.DoWork += readPicturesInTheFolder_DoWork;
@@ -227,6 +225,7 @@ namespace Task5
                 SettingsEditedPathTB.Text = editedPath;
             }
         }
+
         private void readPicturesInTheFolder_DoWork(object sender, DoWorkEventArgs e)
         {
             SettingsBackBTN.Invoke((MethodInvoker)(() => SettingsBackBTN.Enabled = false));

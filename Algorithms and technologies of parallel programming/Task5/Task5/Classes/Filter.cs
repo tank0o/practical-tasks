@@ -39,19 +39,19 @@ namespace Task5.Classes
             }
         }
 
-        public Filter(double[,] newMatrix, string name = "default")
+        public Filter(double[,] newMatrix)
         {
             SetMatrix(newMatrix);
         }
 
-        public Filter(Filter newFilter)
+        public Filter(Filter f)
         {
-            SetMatrix(newFilter.Matrix);
+            SetMatrix(f.Matrix);
         }
 
         public Filter()
         {
-            SetDefault();
+            matrix = new double[3, 3];
         }
 
         public int GetN
@@ -77,67 +77,64 @@ namespace Task5.Classes
 
         public void SetMatrix(int n, int m)
         {
-            if (n <= 0 || m <= 0)
-                throw new Exception("Incorrect matrix power! ");
-
             matrix = new double[n, m];
         }
 
-        public void SetDefault()
-        {
-            matrix = new double[3, 3];
-        }
-
-        public Color[,] EditImage(Picture picture, ParallelOptions ops, out ParallelLoopResult parResult)
+        public Color[,] EditImage(Picture picture, ParallelOptions po, out ParallelLoopResult parResult)
         {
             Color[,] colorMap = picture.ColorMap;
             Color[,] expandedColorMap = picture.ExtendedColorMap;
 
             double div = Div;
-
-            Color[,] result = new Color[
+            if (div == 0)
+                div = 1;
+            Color[,] res = new Color[
                 colorMap.GetLength(0),
                 colorMap.GetLength(1)];
 
-            parResult = Parallel.For(0, colorMap.GetLength(0), ops, i =>
+            parResult = Parallel.For(0, colorMap.GetLength(0), po, i =>
             {
-                if (ops.CancellationToken.IsCancellationRequested)
+                if (po.CancellationToken.IsCancellationRequested)
                     return;
 
                 for (int j = 0; j < colorMap.GetLength(1); j++)
                 {
-                    double sumR = 0, sumG = 0, sumB = 0;
+                    double R = 0, G = 0, B = 0;
 
                     for (int n = 0; n < matrix.GetLength(0); n++)
                         for (int m = 0; m < matrix.GetLength(1); m++)
                         {
-                            sumR += matrix[n, m] * expandedColorMap[n + i, m + j].R;
-                            sumG += matrix[n, m] * expandedColorMap[n + i, m + j].G;
-                            sumB += matrix[n, m] * expandedColorMap[n + i, m + j].B;
+                            R += matrix[n, m] * expandedColorMap[n + i, m + j].R;
+                            G += matrix[n, m] * expandedColorMap[n + i, m + j].G;
+                            B += matrix[n, m] * expandedColorMap[n + i, m + j].B;
                         }
 
-                    sumR /= div;
-                    sumG /= div;
-                    sumB /= div;
+                    R /= div;
+                    G /= div;
+                    B /= div;
 
-                    sumR += offset;
-                    sumG += offset;
-                    sumB += offset;
+                    R += offset;
+                    G += offset;
+                    B += offset;
 
-                    sumR = sumR > 255 ? 255 : sumR;
-                    sumR = sumR < 0 ? 0 : sumR;
+                    if (R > 255)
+                        R = 255;
+                    if (B > 255)
+                        B = 255;
+                    if (G > 255)
+                        G = 255;
 
-                    sumG = sumG > 255 ? 255 : sumG;
-                    sumG = sumG < 0 ? 0 : sumG;
+                    if (R < 0)
+                        R = 0;
+                    if (B < 0)
+                        B = 0;
+                    if (G < 0)
+                        G = 0;
 
-                    sumB = sumB > 255 ? 255 : sumB;
-                    sumB = sumB < 0 ? 0 : sumB;
-
-                    result[i, j] = Color.FromArgb((int)sumR, (int)sumG, (int)sumB);
+                    res[i, j] = Color.FromArgb((int)R, (int)G, (int)B);
                 }
             });
-
-            return result;
+            return res;
         }
 
         public double this[int i, int j]
