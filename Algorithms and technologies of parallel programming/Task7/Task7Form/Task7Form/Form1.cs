@@ -21,14 +21,9 @@ namespace Task7Form
 {
     public partial class Form1 : Form
     {
-
+        string folderPath = "";
         static Files files = new Files(@"C:\Users\Andrew\Documents\PracticaTasks\Algorithms and technologies of parallel programming\Task5");
         static FileSystemWatcher watcher = new FileSystemWatcher();
-
-        Task serverTask;
-
-        string ip = "127.0.0.1";
-        int port = 8888;
 
         BinaryFormatter formatter = new BinaryFormatter();
         MemoryStream filesBit = new MemoryStream();
@@ -38,7 +33,20 @@ namespace Task7Form
             InitializeComponent();
         }
 
-        string folderPath = "";
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            watcher.Filter = "*.txt";
+            watcher.NotifyFilter = NotifyFilters.LastAccess
+                                 | NotifyFilters.LastWrite
+                                 | NotifyFilters.FileName
+                                 | NotifyFilters.DirectoryName;
+            watcher.Changed += OnChangedFile;
+            watcher.Created += OnCreatedFile;
+            watcher.Deleted += OnDeletedFile;
+            watcher.Renamed += OnRenamedFile;
+
+            Log("Приложение запущенно");
+        }
 
         private void ButtonPath_Click(object sender, EventArgs e)
         {
@@ -74,27 +82,35 @@ namespace Task7Form
         private void OnChangedFile(object source, FileSystemEventArgs e)
         {
             files?.NewStatus(e.FullPath, FileStatus.Changed);
+            Log(e.Name + " :файл изменён");
             DGFiles();
         }
         private void OnCreatedFile(object source, FileSystemEventArgs e)
         {
             files?.CreateFile(e.FullPath);
+            Log(e.Name + " :файл создан");
             DGFiles();
         }
         private void OnDeletedFile(object source, FileSystemEventArgs e)
         {
             files?.NewStatus(e.FullPath, FileStatus.Delete);
+            Log(e.Name + " :файл удален");
             DGFiles();
         }
         private void OnRenamedFile(object source, RenamedEventArgs e)
         {
             files?.NewStatus(e.OldFullPath, FileStatus.Rename, e.FullPath);
+            Log(e.OldName + " :файл переименован на " + e.Name);
             DGFiles();
         }
 
         void DGFiles()
         {
+            filesBit = new MemoryStream();
             formatter.Serialize(filesBit, files);
+            byte[] bytes = filesBit.ToArray();
+            if (server != null)
+                server.BroadcastMessage(bytes);
 
             DataGridFile.Invoke((MethodInvoker)(() => DataGridFile.Rows.Clear()));
 
@@ -111,20 +127,19 @@ namespace Task7Form
                 DataGridFile.Invoke((MethodInvoker)(() => DataGridFile.Rows.Add(row)));
             }
         }
-
-        private void Form1_Load(object sender, EventArgs e)
+        
+        void DGClients(List<ClientObject> clients)
         {
-            watcher.Filter = "*.txt";
-            watcher.NotifyFilter = NotifyFilters.LastAccess
-                                 | NotifyFilters.LastWrite
-                                 | NotifyFilters.FileName
-                                 | NotifyFilters.DirectoryName;
-            watcher.Changed += OnChangedFile;
-            watcher.Created += OnCreatedFile;
-            watcher.Deleted += OnDeletedFile;
-            watcher.Renamed += OnRenamedFile;
+            DataGridClient.Invoke((MethodInvoker)(() => DataGridClient.Rows.Clear()));
 
-            Log("Приложение запущенно");
+            for (int i = 0; i < clients.Count; i++)
+            {
+                DataGridViewRow row = new DataGridViewRow();
+                row.CreateCells(DataGridClient);
+
+                row.Cells[0].Value = clients[i].Id;
+                DataGridClient.Invoke((MethodInvoker)(() => DataGridClient.Rows.Add(row)));
+            }
         }
 
         StringBuilder LogSB = new StringBuilder("");
@@ -134,96 +149,26 @@ namespace Task7Form
             TextBoxLog.Invoke((MethodInvoker)(() => TextBoxLog.Text = LogSB.ToString()));
         }
 
-        Socket sListener = null;
-        void SetverTask()
-        {
-            // Устанавливаем для сокета локальную конечную точку
-            IPHostEntry ipHost = Dns.GetHostEntry(ip);
-            IPAddress ipAddr = ipHost.AddressList[0];
-            IPEndPoint ipEndPoint = new IPEndPoint(ipAddr, port);
-
-            // Создаем сокет Tcp/Ip
-            sListener = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-
-            // Назначаем сокет локальной конечной точке и слушаем входящие сокеты
-            try
-            {
-                sListener.Bind(ipEndPoint);
-                sListener.Listen(10);
-
-                // Начинаем слушать соединения
-                while (true)
-                {
-                    Log("Ожидаем соединение через порт " + ipEndPoint);
-
-                    // Программа приостанавливается, ожидая входящее соединение
-                    Socket handler = sListener.Accept();
-                    string data = null;
-
-                    // Мы дождались клиента, пытающегося с нами соединиться
-
-                    byte[] bytes = new byte[1024];
-                    int bytesRec = handler.Receive(bytes);
-
-                    data += Encoding.UTF8.GetString(bytes, 0, bytesRec);
-
-                    // Показываем данные на консоли
-                    Log("Полученный текст: " + data + "\n\n");
-
-                    // Отправляем ответ клиенту
-                    //string reply = "Спасибо за запрос в " + data.Length.ToString()
-                    //        + " символов";
-                    byte[] msg = filesBit.ToArray();
-                    handler.Send(msg);
-
-                    if (data.IndexOf("<TheEnd>") > -1)
-                    {
-                        Log("Сервер завершил соединение с клиентом.");
-                        break;
-                    }
-
-                    handler.Shutdown(SocketShutdown.Both);
-                    handler.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-            finally
-            {
-                Console.ReadLine();
-            }
-        }
-
-
-
-
         static CancellationTokenSource tokenSource;
         static CancellationToken token;
+        static Task serverTask;
         private void ButtonStartStop_Click(object sender, EventArgs e)
         {
-            ServerStart();
-            //if (ButtonStartStop.Text == "Start")
-            //{
-            //    tokenSource = new CancellationTokenSource();
-            //    token = tokenSource.Token;
-            //    serverTask = new Task(() => SetverTask(), token);
-            //    serverTask.Start();
-            //    ButtonStartStop.Text = "Stop";
-            //}
-            //else
-            //{
-            //    sListener.Close();
-            //    tokenSource.Cancel();
-            //    ButtonStartStop.Text = "Start";
-            //    Log("Сервер остановлен");
-            //}
-        }
-
-        private void DataGridFile_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
+            if (ButtonStartStop.Text == "Start")
+            {
+                tokenSource = new CancellationTokenSource();
+                token = tokenSource.Token;
+                serverTask = new Task(() => ServerStart(), token);
+                serverTask.Start();
+                ButtonStartStop.Text = "Stop";
+            }
+            else
+            {
+                server.Disconnect();
+                tokenSource.Cancel();
+                ButtonStartStop.Text = "Start";
+                Log("Сервер остановлен");
+            }
         }
 
         static ServerObject server; // сервер
@@ -234,14 +179,23 @@ namespace Task7Form
             {
                 server = new ServerObject();
                 server.Log = Log;
+                server.DGClient = DGClients;
+                int key = (new Random()).Next(100000, 999999);
+                Log("Сгенерирован ключ: " + key);
+                server.Key = key.ToString();
                 listenThread = new Thread(new ThreadStart(server.Listen));
                 listenThread.Start(); //старт потока
             }
             catch (Exception ex)
             {
                 server.Disconnect();
-                //Log(ex.Message);
             }
+        }
+
+        private void ButtonRemoveConnection_Click(object sender, EventArgs e)
+        {
+            if (server != null)
+                server.RemoveConnection(DataGridClient.SelectedCells[0].Value.ToString());
         }
     }
 }

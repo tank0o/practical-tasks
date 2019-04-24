@@ -34,6 +34,7 @@
             this.ButtonStartStop = new System.Windows.Forms.Button();
             this.textBoxKey = new System.Windows.Forms.TextBox();
             this.textBoxIp = new System.Windows.Forms.TextBox();
+            this.textBoxFolderPath = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridFile)).BeginInit();
             this.SuspendLayout();
             // 
@@ -88,11 +89,20 @@
             this.textBoxIp.Size = new System.Drawing.Size(166, 20);
             this.textBoxIp.TabIndex = 8;
             // 
+            // textBoxFolderPath
+            // 
+            this.textBoxFolderPath.Location = new System.Drawing.Point(423, 14);
+            this.textBoxFolderPath.Name = "textBoxFolderPath";
+            this.textBoxFolderPath.ReadOnly = true;
+            this.textBoxFolderPath.Size = new System.Drawing.Size(364, 20);
+            this.textBoxFolderPath.TabIndex = 9;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.textBoxFolderPath);
             this.Controls.Add(this.textBoxIp);
             this.Controls.Add(this.textBoxKey);
             this.Controls.Add(this.DataGridFile);
@@ -114,6 +124,7 @@
         private System.Windows.Forms.Button ButtonStartStop;
         private System.Windows.Forms.TextBox textBoxKey;
         private System.Windows.Forms.TextBox textBoxIp;
+        private System.Windows.Forms.TextBox textBoxFolderPath;
     }
 }
 

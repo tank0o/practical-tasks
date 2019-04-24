@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Task7Form.Classes
@@ -14,6 +15,7 @@ namespace Task7Form.Classes
         protected internal NetworkStream Stream { get; private set; }
         TcpClient client;
         ServerObject server; // объект сервера
+        public string key = ""; //ключ безопастности
 
         public ClientObject(TcpClient tcpClient, ServerObject serverObject)
         {
@@ -21,50 +23,40 @@ namespace Task7Form.Classes
             client = tcpClient;
             server = serverObject;
             serverObject.AddConnection(this);
+            Stream = client.GetStream();
         }
 
-        //public void Process()
-        //{
-        //    try
-        //    {
-        //        Stream = client.GetStream();
-        //        // получаем имя пользователя
-        //        string message = GetMessage();
-        //        userName = message;
-        //        //message = userName + " вошел в чат";
-        //        //// посылаем сообщение о входе в чат всем подключенным пользователям
-        //        //server.BroadcastMessage(message, this.Id);
-        //        Console.WriteLine(message);
-        //        // в бесконечном цикле получаем сообщения от клиента
-        //        while (true)
-        //        {
-        //            try
-        //            {
-        //                message = GetMessage();
-        //                message = String.Format("{0}: {1}", userName, message);
-        //                Console.WriteLine(message);
-        //                server.BroadcastMessage(message, this.Id);
-        //            }
-        //            catch
-        //            {
-        //                message = String.Format("{0}: покинул чат", userName);
-        //                Console.WriteLine(message);
-        //                server.BroadcastMessage(message, this.Id);
-        //                break;
-        //            }
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Console.WriteLine(e.Message);
-        //    }
-        //    finally
-        //    {
-        //        // в случае выхода из цикла закрываем ресурсы
-        //        server.RemoveConnection(this.Id);
-        //        Close();
-        //    }
-        //}
+        public void Process()
+        {
+            try
+            {
+                // получаем имя пользователя
+                string message = GetMessage();
+                key = message;
+                // в бесконечном цикле получаем сообщения от клиента
+                while (true)
+                {
+                    try
+                    {
+                        message = GetMessage();
+                    }
+                    catch
+                    {
+                        break;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                // в случае выхода из цикла закрываем ресурсы
+                server.RemoveConnection(this.Id);
+                Close();
+            }
+        }
 
         // чтение входящего сообщения и преобразование в строку
         private string GetMessage()
@@ -97,22 +89,44 @@ namespace Task7Form.Classes
         static TcpListener tcpListener; // сервер для прослушивания
         List<ClientObject> clients = new List<ClientObject>(); // все подключения
 
-        public delegate void LOG (string text);
-        public LOG Log;
+        public delegate void LOG(string text);
+        LOG log;
+        public LOG Log
+        {
+            set { log = value; }
+            get { return log; }
+        }
 
+        public delegate void DGCLIENT(List<ClientObject> clients);
+        DGCLIENT dGClient;
+        public DGCLIENT DGClient
+        {
+            set { dGClient = value; }
+            get { return dGClient; }
+        }
+
+        string key = "";
+        public string Key
+        {
+            get { return key; }
+            set { key = value; }
+        }
         protected internal void AddConnection(ClientObject clientObject)
         {
-            Log("Клиент подключен");
+            log("Клиент подключен");
             clients.Add(clientObject);
+            DGClient(clients);
         }
-        protected internal void RemoveConnection(string id)
+        public void RemoveConnection(string id)
         {
             // получаем по id закрытое подключение
             ClientObject client = clients.FirstOrDefault(c => c.Id == id);
             // и удаляем его из списка подключений
             if (client != null)
                 clients.Remove(client);
+            dGClient(clients);
         }
+
         // прослушивание входящих подключений
         protected internal void Listen()
         {
@@ -120,15 +134,15 @@ namespace Task7Form.Classes
             {
                 tcpListener = new TcpListener(IPAddress.Any, 8888);
                 tcpListener.Start();
-                Log("Сервер запущен. Ожидание подключений...");
+                log("Сервер запущен. Ожидание подключений...");
 
                 while (true)
                 {
                     TcpClient tcpClient = tcpListener.AcceptTcpClient();
 
                     ClientObject clientObject = new ClientObject(tcpClient, this);
-                    //Thread clientThread = new Thread(new ThreadStart(clientObject.Process));
-                    //clientThread.Start();
+                    Thread clientThread = new Thread(new ThreadStart(clientObject.Process));
+                    clientThread.Start();
                 }
             }
             catch (Exception ex)
@@ -141,9 +155,17 @@ namespace Task7Form.Classes
         // трансляция сообщения подключенным клиентам
         protected internal void BroadcastMessage(byte[] data)
         {
-            for (int i = 0; i < clients.Count; i++)
+            try
             {
-                clients[i].Stream.Write(data, 0, data.Length); //передача данных
+                for (int i = 0; i < clients.Count; i++)
+                {
+                    if (clients[i].key == key)
+                        clients[i].Stream.Write(data, 0, data.Length); //передача данных
+                }
+            }
+            catch(Exception e)
+            {
+                
             }
         }
         // отключение всех клиентов

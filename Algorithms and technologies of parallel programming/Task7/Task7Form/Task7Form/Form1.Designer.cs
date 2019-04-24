@@ -37,6 +37,7 @@
             this.FileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.StatusFile = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TextBoxLog = new System.Windows.Forms.TextBox();
+            this.buttonRemoveConnection = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridClient)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridFile)).BeginInit();
             this.SuspendLayout();
@@ -79,7 +80,7 @@
             this.DataGridClient.Location = new System.Drawing.Point(13, 72);
             this.DataGridClient.Name = "DataGridClient";
             this.DataGridClient.ReadOnly = true;
-            this.DataGridClient.Size = new System.Drawing.Size(131, 204);
+            this.DataGridClient.Size = new System.Drawing.Size(131, 175);
             this.DataGridClient.TabIndex = 3;
             // 
             // IPClient
@@ -102,7 +103,6 @@
             this.DataGridFile.ReadOnly = true;
             this.DataGridFile.Size = new System.Drawing.Size(361, 234);
             this.DataGridFile.TabIndex = 4;
-            this.DataGridFile.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridFile_CellContentClick);
             // 
             // FileName
             // 
@@ -127,11 +127,22 @@
             this.TextBoxLog.Size = new System.Drawing.Size(499, 238);
             this.TextBoxLog.TabIndex = 5;
             // 
+            // buttonRemoveConnection
+            // 
+            this.buttonRemoveConnection.Location = new System.Drawing.Point(13, 253);
+            this.buttonRemoveConnection.Name = "buttonRemoveConnection";
+            this.buttonRemoveConnection.Size = new System.Drawing.Size(131, 23);
+            this.buttonRemoveConnection.TabIndex = 6;
+            this.buttonRemoveConnection.Text = "Remove Connection";
+            this.buttonRemoveConnection.UseVisualStyleBackColor = true;
+            this.buttonRemoveConnection.Click += new System.EventHandler(this.ButtonRemoveConnection_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(524, 533);
+            this.Controls.Add(this.buttonRemoveConnection);
             this.Controls.Add(this.TextBoxLog);
             this.Controls.Add(this.DataGridFile);
             this.Controls.Add(this.DataGridClient);
@@ -159,6 +170,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn FileName;
         private System.Windows.Forms.DataGridViewTextBoxColumn StatusFile;
         private System.Windows.Forms.TextBox TextBoxLog;
+        private System.Windows.Forms.Button buttonRemoveConnection;
     }
 }
 

@@ -59,9 +59,16 @@ namespace Task7Dll
     public class Files
     {
         File[] files;
+        string folderPath = "";
+
+        public string FolderPath
+        {
+            get { return folderPath; }
+        }
 
         public Files(string path)
         {
+            folderPath = path;
             var filesPath = Directory.GetFiles(path);
 
             files = new File[filesPath.Length];
