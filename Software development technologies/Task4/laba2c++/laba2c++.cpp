@@ -25,4 +25,3 @@ int main()
 
 	int a; cin >> a;
 }
-

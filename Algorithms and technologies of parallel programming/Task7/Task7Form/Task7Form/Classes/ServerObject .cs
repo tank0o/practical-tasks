@@ -119,11 +119,18 @@ namespace Task7Form.Classes
         }
         public void RemoveConnection(string id)
         {
-            // получаем по id закрытое подключение
-            ClientObject client = clients.FirstOrDefault(c => c.Id == id);
-            // и удаляем его из списка подключений
-            if (client != null)
-                clients.Remove(client);
+            try
+            {
+                // получаем по id закрытое подключение
+                ClientObject client = clients.FirstOrDefault(c => c.Id == id);
+                // и удаляем его из списка подключений
+                if (client != null)
+                {
+                    clients.Remove(client);
+                    client.Stream.Write(new byte[] { 33, 33, 33 }, 0, 3);
+                }
+            }
+            catch{}
             dGClient(clients);
         }
 
@@ -175,7 +182,7 @@ namespace Task7Form.Classes
 
             for (int i = 0; i < clients.Count; i++)
             {
-                clients[i].Close(); //отключение клиента
+               RemoveConnection(clients[i].Id); //отключение клиента
             }
             Environment.Exit(0); //завершение процесса
         }

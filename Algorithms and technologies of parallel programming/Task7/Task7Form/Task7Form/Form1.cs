@@ -197,5 +197,13 @@ namespace Task7Form
             if (server != null)
                 server.RemoveConnection(DataGridClient.SelectedCells[0].Value.ToString());
         }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if(server != null)
+            server.Disconnect();
+            if(tokenSource!=null)
+            tokenSource.Cancel();
+        }
     }
 }

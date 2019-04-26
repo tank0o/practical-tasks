@@ -104,15 +104,16 @@ namespace Task7FormClient
             {
                 try
                 {
-
                     byte[] data = new byte[1024 * 512]; // буфер для получаемых данных
-                    int i = 0;
                     do
                     {
                         stream.Read(data, 0, data.Length);
                     }
                     while (stream.DataAvailable);
-                    //MessageBox.Show(i.ToString());
+                    if(data[0] == 33 && data [1] == 33 && data[2] == 33)
+                    {
+                        throw new Exception("Сервер принудительно отключил пользователя");
+                    }
                     MemoryStream memoryStream = new MemoryStream(data);
                     files = (Files)formatter.Deserialize(memoryStream);
                     folderPath = files.FolderPath;
@@ -121,7 +122,7 @@ namespace Task7FormClient
                 catch (Exception e)
                 {
                     //MessageBox.Show(e.Message);
-                    //Disconnect();
+                    Disconnect();
                 }
             }
         }
