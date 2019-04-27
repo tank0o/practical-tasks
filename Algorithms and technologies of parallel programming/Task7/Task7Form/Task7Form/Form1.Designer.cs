@@ -150,7 +150,7 @@
             this.Controls.Add(this.ButtonStartStop);
             this.Controls.Add(this.ButtonPath);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Лабораторная работа №7 Сервер";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.DataGridClient)).EndInit();

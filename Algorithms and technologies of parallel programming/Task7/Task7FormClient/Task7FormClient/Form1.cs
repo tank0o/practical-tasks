@@ -25,13 +25,19 @@ namespace Task7FormClient
             InitializeComponent();
         }
 
-        static Files files;
-        static BinaryFormatter formatter = new BinaryFormatter();
+        Files files;
+        BinaryFormatter formatter = new BinaryFormatter();
 
         string folderPath = "";
+        string folderPathOld;
+
         Task clientTask;
-        static CancellationTokenSource tokenSource;
-        static CancellationToken token;
+        CancellationTokenSource tokenSource;
+        CancellationToken token;
+
+        private const int port = 8888;
+        TcpClient client;
+        NetworkStream stream;
         private void ButtonStartStop_Click(object sender, EventArgs e)
         {
             if (ButtonStartStop.Text == "Start")
@@ -44,9 +50,22 @@ namespace Task7FormClient
             }
             else
             {
-                stream.Close();
-                tokenSource.Cancel();
-                ButtonStartStop.Text = "Start";
+                Disconnect();
+            }
+        }
+
+        void MessageBoxShow()
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                if (folderPathOld != files.FolderPath)
+                {
+                    MessageBox.Show("Изменена папка");
+                }
+                else
+                {
+                    MessageBox.Show("Изменение в файле");
+                }
             }
         }
 
@@ -69,27 +88,20 @@ namespace Task7FormClient
             }
         }
 
-        //------------------------------------------------------------------
-        private const string host = "127.0.0.1";
-        private const int port = 8888;
-        static TcpClient client;
-        static NetworkStream stream;
-
         void StartClient()
         {
             client = new TcpClient();
             try
             {
-                client.Connect(host, port); //подключение клиента
+                client.Connect(textBoxIp.Text, port); //подключение клиента
                 stream = client.GetStream(); // получаем поток
 
                 string message = textBoxKey.Text;
                 byte[] data = Encoding.Unicode.GetBytes(message);
                 stream.Write(data, 0, data.Length);
 
-                // запускаем новый поток для получения данных
-                Thread receiveThread = new Thread(new ThreadStart(ReceiveMessage));
-                receiveThread.Start(); //старт потока
+                // запускаем метод для получения данных
+                ReceiveMessage();
             }
             catch (Exception ex)
             {
@@ -110,35 +122,59 @@ namespace Task7FormClient
                         stream.Read(data, 0, data.Length);
                     }
                     while (stream.DataAvailable);
-                    if(data[0] == 33 && data [1] == 33 && data[2] == 33)
+                    if (data[0] == 33 && data[1] == 33 && data[2] == 33)
                     {
                         throw new Exception("Сервер принудительно отключил пользователя");
                     }
                     MemoryStream memoryStream = new MemoryStream(data);
                     files = (Files)formatter.Deserialize(memoryStream);
+                    folderPathOld = folderPath;
                     folderPath = files.FolderPath;
                     DGFiles();
+                    MessageBoxShow();
                 }
                 catch (Exception e)
                 {
-                    //MessageBox.Show(e.Message);
+                    MessageBox.Show(e.Message);
                     Disconnect();
+                    break;
                 }
             }
         }
 
-        static void Disconnect()
+        void Disconnect()
         {
             if (stream != null)
                 stream.Close();//отключение потока
             if (client != null)
                 client.Close();//отключение клиента
-            Environment.Exit(0); //завершение процесса
+            if (tokenSource != null)
+                tokenSource.Cancel();
+            ButtonStartStop.Invoke((MethodInvoker)(()=>ButtonStartStop.Text = "Start"));
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void Form1_Deactivate(object sender, EventArgs e)
         {
-            // SatrtClient();
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.ShowInTaskbar = false;
+                notifyIcon1.Visible = true;
+            }
+        }
+
+        private void NotifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.WindowState = FormWindowState.Normal;
+                this.ShowInTaskbar = true;
+                notifyIcon1.Visible = false;
+            }
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Disconnect();
         }
     }
 }

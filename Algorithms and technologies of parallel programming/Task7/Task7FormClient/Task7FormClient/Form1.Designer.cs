@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.DataGridFile = new System.Windows.Forms.DataGridView();
             this.FileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.StatusFile = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -35,6 +37,7 @@
             this.textBoxKey = new System.Windows.Forms.TextBox();
             this.textBoxIp = new System.Windows.Forms.TextBox();
             this.textBoxFolderPath = new System.Windows.Forms.TextBox();
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.DataGridFile)).BeginInit();
             this.SuspendLayout();
             // 
@@ -88,6 +91,7 @@
             this.textBoxIp.Name = "textBoxIp";
             this.textBoxIp.Size = new System.Drawing.Size(166, 20);
             this.textBoxIp.TabIndex = 8;
+            this.textBoxIp.Text = "127.0.0.1";
             // 
             // textBoxFolderPath
             // 
@@ -96,6 +100,13 @@
             this.textBoxFolderPath.ReadOnly = true;
             this.textBoxFolderPath.Size = new System.Drawing.Size(364, 20);
             this.textBoxFolderPath.TabIndex = 9;
+            // 
+            // notifyIcon1
+            // 
+            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
+            this.notifyIcon1.Text = "notifyIcon1";
+            this.notifyIcon1.Visible = true;
+            this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.NotifyIcon1_MouseDoubleClick);
             // 
             // Form1
             // 
@@ -108,8 +119,9 @@
             this.Controls.Add(this.DataGridFile);
             this.Controls.Add(this.ButtonStartStop);
             this.Name = "Form1";
-            this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Text = "Лабораторная работа №7 Клиент";
+            this.Deactivate += new System.EventHandler(this.Form1_Deactivate);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.DataGridFile)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -125,6 +137,7 @@
         private System.Windows.Forms.TextBox textBoxKey;
         private System.Windows.Forms.TextBox textBoxIp;
         private System.Windows.Forms.TextBox textBoxFolderPath;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
     }
 }
 

@@ -1,0 +1,24 @@
+﻿DELETE FROM dfg WHERE x + 2 * 6 = 5 OR x + 1 < 1 AND x
+
+*DeleteStmt: 'DELETE' 'FROM' identifier 'WHERE' OrCondition
+OrCondition: OrCondition 'OR' AndCondition
+OrCondition: AndCondition
+AndCondition: AndCondition 'OR' LogicExpr
+AndCondition: LogicExpr
+LogicExpr: SumExpr '=' SumExpr
+LogicExpr: SumExpr '<' SumExpr
+LogicExpr: SumExpr
+SumExpr: SumExpr '+' MultExpr
+SumExpr: SumExpr '-' MultExpr
+SumExpr: MultExpr
+MultExpr: MultExpr '*' Primary
+MultExpr: MultExpr '/' Primary
+MultExpr: Primary
+Primary: number
+Primary: identifier
+
+Стартовый нетерминал: DeleteStmt
+Алфавит: 'DELETE' 'FROM' identifier 'WHERE' number '+' '*' '-' '/' '=' '<' 'AND' 'OR'
+Терминалы: number, identifier
+Нетерминалы: OrCondition, AndCondition, LogicExpr, SumExpr, MultExpr, Primary
+

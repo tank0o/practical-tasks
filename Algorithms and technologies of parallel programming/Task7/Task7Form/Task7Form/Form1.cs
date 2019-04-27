@@ -22,8 +22,8 @@ namespace Task7Form
     public partial class Form1 : Form
     {
         string folderPath = "";
-        static Files files = new Files(@"C:\Users\Andrew\Documents\PracticaTasks\Algorithms and technologies of parallel programming\Task5");
-        static FileSystemWatcher watcher = new FileSystemWatcher();
+        Files files = new Files(@"C:\Users\Andrew\Documents\PracticaTasks\Algorithms and technologies of parallel programming\Task5");
+        FileSystemWatcher watcher = new FileSystemWatcher();
 
         BinaryFormatter formatter = new BinaryFormatter();
         MemoryStream filesBit = new MemoryStream();
@@ -35,7 +35,7 @@ namespace Task7Form
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            watcher.Filter = "*.txt";
+            //watcher.Filter = "*.txt";
             watcher.NotifyFilter = NotifyFilters.LastAccess
                                  | NotifyFilters.LastWrite
                                  | NotifyFilters.FileName
@@ -127,7 +127,7 @@ namespace Task7Form
                 DataGridFile.Invoke((MethodInvoker)(() => DataGridFile.Rows.Add(row)));
             }
         }
-        
+
         void DGClients(List<ClientObject> clients)
         {
             DataGridClient.Invoke((MethodInvoker)(() => DataGridClient.Rows.Clear()));
@@ -149,9 +149,9 @@ namespace Task7Form
             TextBoxLog.Invoke((MethodInvoker)(() => TextBoxLog.Text = LogSB.ToString()));
         }
 
-        static CancellationTokenSource tokenSource;
-        static CancellationToken token;
-        static Task serverTask;
+        CancellationTokenSource tokenSource;
+        CancellationToken token;
+        Task serverTask;
         private void ButtonStartStop_Click(object sender, EventArgs e)
         {
             if (ButtonStartStop.Text == "Start")
@@ -164,15 +164,12 @@ namespace Task7Form
             }
             else
             {
-                server.Disconnect();
-                tokenSource.Cancel();
-                ButtonStartStop.Text = "Start";
-                Log("Сервер остановлен");
+                ServerStop();
             }
         }
 
-        static ServerObject server; // сервер
-        static Thread listenThread; // потока для прослушивания
+        ServerObject server; // сервер
+        Thread listenThread; // потока для прослушивания
         void ServerStart()
         {
             try
@@ -192,6 +189,16 @@ namespace Task7Form
             }
         }
 
+        void ServerStop()
+        {
+            if (server != null)
+                server.Disconnect();
+            if (tokenSource != null)
+                tokenSource.Cancel();
+            ButtonStartStop.Text = "Start";
+            Log("Сервер остановлен");
+        }
+
         private void ButtonRemoveConnection_Click(object sender, EventArgs e)
         {
             if (server != null)
@@ -200,10 +207,7 @@ namespace Task7Form
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(server != null)
-            server.Disconnect();
-            if(tokenSource!=null)
-            tokenSource.Cancel();
+            ServerStop();
         }
     }
 }
