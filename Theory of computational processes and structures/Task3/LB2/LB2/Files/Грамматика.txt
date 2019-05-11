@@ -1,23 +1,28 @@
-DELETE FROM dfg WHERE x + 2 * 6 = 5 OR x + 1 < 1 AND x
+SELECT ab, dfg FROM bla ORDER BY ab, dfg + 2 * 6 desc, df asc
 
-*DeleteStmt:
-	'DELETE' 'FROM' identifier 'WHERE' OrCondition
+*SelectStmt:
+	'SELECT' IdentifierExprs 'FROM' identifier 'ORDER' 'BY' DescAscExprs
 
-OrCondition:
-	OrCondition 'OR' AndCondition | AndCondition
+IdentifierExprs:
+	IdentifierExprs ',' identifier
+	identifier
 
-AndCondition:
-	AndCondition 'AND' LogicExpr | LogicExpr
-	
-LogicExpr:
-	SumExpr (('='|'<') SumExpr)?
+DescAscExprs: 
+	DescAscExprs ',' DescAscExpr 
+	DescAscExpr
+
+DescAscExpr: 
+	SumExpr ('desc'|'asc')?
 
 SumExpr:
-	SumExpr ('+'|'-') MultExpr | MultExpr
+	SumExpr ('+'|'-') MultExpr 
+	MultExpr
 	
 MultExpr:
-	MultExpr ('*'|'/') Primary | Primary
+	MultExpr ('*'|'/') Primary 
+	Primary
 	
 Primary:
 	number
 	identifier
+	'(' SumExpr ')'

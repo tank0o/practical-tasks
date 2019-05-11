@@ -1,35 +1,26 @@
-DELETE FROM dfg WHERE x + 2 * 6 = 5 OR x + 1 < 1 AND x
+SELECT ab, dfg FROM bla ORDER BY ab, dfg + 2 * 6 desc, df asc
 
-DeleteStmt ->
-DELETE FROM dfg WHERE OrCondition ->
-DELETE FROM dfg WHERE OrCondition 'OR' AndCondition ->
-DELETE FROM dfg WHERE AndCondition 'OR' AndCondition ->
-DELETE FROM dfg WHERE LogicExpr 'OR' AndCondition ->
-DELETE FROM dfg WHERE SumExpr = SumExpr 'OR' AndCondition ->
-DELETE FROM dfg WHERE SumExpr + MultExpr = SumExpr 'OR' AndCondition ->
-DELETE FROM dfg WHERE MultExpr + MultExpr = SumExpr 'OR' AndCondition ->
-DELETE FROM dfg WHERE Primary + MultExpr = SumExpr 'OR' AndCondition ->
-DELETE FROM dfg WHERE x + MultExpr = SumExpr 'OR' AndCondition ->
-DELETE FROM dfg WHERE x + MultExpr * Primary = SumExpr 'OR' AndCondition ->
-DELETE FROM dfg WHERE x + Primary * Primary = SumExpr 'OR' AndCondition ->
-DELETE FROM dfg WHERE x + 2 * Primary = SumExpr 'OR' AndCondition ->
-DELETE FROM dfg WHERE x + 2 * 6 = SumExpr 'OR' AndCondition ->
-DELETE FROM dfg WHERE x + 2 * 6 = MultExpr 'OR' AndCondition ->
-DELETE FROM dfg WHERE x + 2 * 6 = Primary 'OR' AndCondition ->
-DELETE FROM dfg WHERE x + 2 * 6 = 5 OR AndCondition ->
-DELETE FROM dfg WHERE x + 2 * 6 = 5 OR AndCondition AND LogicExpr  ->
-DELETE FROM dfg WHERE x + 2 * 6 = 5 OR LogicExpr AND LogicExpr  ->
-DELETE FROM dfg WHERE x + 2 * 6 = 5 OR SumExpr < SumExpr AND LogicExpr  ->
-DELETE FROM dfg WHERE x + 2 * 6 = 5 OR SumExpr + MultExpr < SumExpr AND LogicExpr  ->
-DELETE FROM dfg WHERE x + 2 * 6 = 5 OR MultExpr + MultExpr < SumExpr AND LogicExpr  ->
-DELETE FROM dfg WHERE x + 2 * 6 = 5 OR Primary + MultExpr < SumExpr AND LogicExpr  ->
-DELETE FROM dfg WHERE x + 2 * 6 = 5 OR x + MultExpr < SumExpr AND LogicExpr  ->
-DELETE FROM dfg WHERE x + 2 * 6 = 5 OR x + Primary < SumExpr AND LogicExpr  ->
-DELETE FROM dfg WHERE x + 2 * 6 = 5 OR x + 1 < SumExpr AND LogicExpr  ->
-DELETE FROM dfg WHERE x + 2 * 6 = 5 OR x + 1 < MultExpr AND LogicExpr  ->
-DELETE FROM dfg WHERE x + 2 * 6 = 5 OR x + 1 < Primary AND LogicExpr  ->
-DELETE FROM dfg WHERE x + 2 * 6 = 5 OR x + 1 < 1 AND LogicExpr  ->
-DELETE FROM dfg WHERE x + 2 * 6 = 5 OR x + 1 < 1 AND SumExpr  ->
-DELETE FROM dfg WHERE x + 2 * 6 = 5 OR x + 1 < 1 AND MultExpr  ->
-DELETE FROM dfg WHERE x + 2 * 6 = 5 OR x + 1 < 1 AND Primary  ->
-DELETE FROM dfg WHERE x + 2 * 6 = 5 OR x + 1 < 1 AND x
+SelectStmt 
+SELECT IdentifierExprs FROM identifier ORDER BY DescAscExprs 
+SELECT IdentifierExprs , identifier FROM identifier ORDER BY DescAscExprs 
+SELECT identifier , identifier FROM identifier ORDER BY DescAscExprs 
+SELECT identifier , identifier FROM identifier ORDER BY DescAscExprs , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY DescAscExprs , DescAscExpr , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY DescAscExpr , DescAscExpr , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY SumExpr , DescAscExpr , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY MultExpr , DescAscExpr , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY Primary , DescAscExpr , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , DescAscExpr , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , SumExpr 'desc' , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , SumExpr + MultExpr desc , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , MultExpr + MultExpr desc , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , Primary + MultExpr desc , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , identifier + MultExpr desc , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , identifier + MultExpr * Primary desc , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , identifier + Primary * Primary desc , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , identifier + number * Primary desc , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , identifier + number * number desc , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , identifier + number * number desc , SumExpr asc 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , identifier + number * number desc , MultExpr asc 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , identifier + number * number desc , Primary asc 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , identifier + number * number desc , df asc 

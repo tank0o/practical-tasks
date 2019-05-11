@@ -4,15 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{68DA0400-3044-4217-86B7-4F9FAE4A8B84}</ProjectGuid>
+    <ProjectGuid>{7BF4798F-97DA-4B4A-9C21-7B226A52E912}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>LB2</RootNamespace>
-    <AssemblyName>LB2</AssemblyName>
+    <RootNamespace>_4_2</RootNamespace>
+    <AssemblyName>4_2</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -44,19 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Files\4_2.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Files\answer.txt" />
-    <Content Include="Files\Входная строка.txt" />
-    <Content Include="Files\Вывод.txt" />
-    <Content Include="Files\Грамматика.txt" />
-    <Content Include="Files\Классическая грамматика.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
