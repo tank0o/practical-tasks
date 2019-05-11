@@ -1,0 +1,131 @@
+<html>
+	<head>
+		<style type="text/css">
+		* {margin:0;padding:0;color:black;font-family:Arial;}
+		#layout {
+			width: 1000px;
+			margin: 0 auto;
+		}
+		.bordered {border: 1px solid #000000;}
+		.redbordered {border-color: #FF0000;}
+		.blue {color: darkblue;}
+		.rdotted {border-style:solid; border-right-style: dotted;}
+		.ldotted {border-style:solid; border-left-style: dotted;}	
+		.lrdotted {border-style:solid; border-left-style: dotted; border-right-style: dotted;}	
+		li {color: #ff0000;background: #CCC;border-bottom:1px solid red;}
+		</style>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script src="jquery.min.js"></script>
+		<script type="text/javascript">
+		//внешняя функция
+		function onBoxMove(element) {
+			$(element).toggleClass("redbordered"); 
+		}
+		//код, исполняемый при полной загрузке документа
+		$(document).ready(function () {							
+			//все элементы с классом button должны выглядеть как кнопки
+			$(".button").addClass("dotted").css("cursor","pointer").css("background","#DDDDDD").width(100);
+			
+			//все блоки с классом box должны иметь внешние отступы, а при наведении мыши еще и красные границы
+			$("div.box")
+						.addClass("bordered")						
+						.css("margin",20)
+						.mouseover(function () {onBoxMove(this);})
+						.mouseout(function () {onBoxMove(this);});
+									
+			//все элементы с классом button при щелчке будут выполнять:
+			$(".button").click(function () {
+				//добавлять границы к шапке
+				$("#header").addClass("bordered");
+				//Удлинять гиперссылки с атрибутом width="100"
+				$("li[width=100]").width(200);
+				//Все таблицы примут ширину 300 и толстые внешние границы
+				$("table").width(300).addClass("bordered").css("border-width","3px");
+				//Внутренняя граница между ячейками должна быть пунктирной, а остальные - сплошными
+				$("table")
+					.find("td") //находим все ячейки таблицы
+						.addClass("bordered lrdotted") // применяем два класса
+						.end() //возвращаемся к таблице
+					.find("td:first-child") //находим первую ячейку каждой строки
+						.addClass("rdotted") //применяем класс
+						.end() //возвращаемся к таблице
+					.find("td:last-child") //находим последний элемент внутри каждого дочернего
+					.addClass("ldotted"); //применяем класс
+				//Все ячейки всех таблиц будут отцентрированы
+				$("table > td").css("text-align","center");
+				//Первая ячейка каждой четной строки получит желтый фон
+				$("tr:odd > td:first-child").css("background","yellow");
+				//Нечетные строки станут серыми
+				$("tr:nth-child(even)").css("background","#CCCCCC");
+				//Текст абзацев в блоках должен быть синим, а важный в них - красным
+				$("div.box > p").addClass("blue").find("span").css("color","red");
+				});
+				
+			//все картинки при клике на них будут исчезать
+			$("img").click(function() {
+					$(this).hide();
+				});						
+			//при нажатии на любую ссылку с цифрой 5, все прочие ссылки сокращаются до 100px
+			$("a:contains(5)").click(function () {
+				$("li > a:not(this)").width(100);
+			});
+			
+			//при нажатии на ссылку с цифрой 4, все скрытые картинки появляются назад
+			$("a:contains(4)").click(function () {
+				$("img:hidden").show();
+			});
+			//при нажатии на ссылку с цифрой 2 элементы li становятся строчными, при повторном - блочными
+			$("a:contains(2)").click(function () {
+				if ($("li").css("display")=="block") {
+					$("li").css("display","inline"); 
+				} else {
+					$("li").css("display","block"); 
+				}
+			});
+			//при нажатии на любую ссылку у нее меняется цвет на синий и, при повторном, обратно на черный
+			$("a").click(function () {
+					$(this).toggleClass("blue");
+			});
+		});
+		</script>
+	</head>
+	<body>
+		<div id="layout">
+			<div id="header">
+				<ul>
+					<li width="100"><a href="#">Link 1</a></li>
+					<li width="100"><a href="#">Link 2</a></li>
+					<li width="100"><a href="#">Link 3</a></li>
+					<li width="100"><a href="#">Link 4</a></li>
+					<li width="150"><a href="#">Link 5</a></li>
+				</ul>
+			</div>
+			<div class="box">
+				<p>Some <span>important</span> text.</p>
+				<p>Some <span>important</span> text.</p>
+				<p>Some <span>important</span> text.</p>
+			</div>
+			<div class="box">
+				<p align="left">Some <span>important</span> text.</p>
+				<p>Some images <img class="box" src="https://yandex.st/lego/_/U8MjORjHwRKwb7hobNZFfiMLzVI.png" alt="yandex"/>.</p>
+				<p>Some <span>important</span> text.</p>
+			</div>
+			<div class="box">
+				<p>Some <span>most important</span> text.</p>
+				<p align="left">Some button</p>
+				<div class="button">Do the job!</div>
+			</div>
+			<div class="box">
+				<p>Some <span>most important</span> text.</p>
+				<p>And tables!</p>
+				<table>
+					<tr><td>1</td><td>John</td><td>Peter</td><td>Jane</td></tr>
+					<tr><td>2</td><td>Jane</td><td>John</td><td>Peter</td></tr>
+					<tr><td>3</td><td>Peter</td><td>Jane</td><td>John</td></tr>
+					<tr><td>4</td><td>Philip</td><td>Peter</td><td>John</td></tr>
+					<tr><td>5</td><td>Oliver</td><td>John</td><td>Philip</td></tr>
+				</table>
+			</div>	
+		</div>
+	</body>
+</html>

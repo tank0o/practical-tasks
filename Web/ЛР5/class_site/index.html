@@ -1,0 +1,455 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+Design by Free CSS Templates
+http://www.freecsstemplates.org
+Released for free under a Creative Commons Attribution 2.5 License
+
+Name       : Simple World 
+Description: A two-column, fixed-width design with dark color scheme.
+Version    : 1.0
+Released   : 20111225
+
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>Simple World by Free CSS Templates</title>
+	<link href='http://fonts.googleapis.com/css?family=Ubuntu+Condensed' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Marvel' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Marvel|Delius+Unicase' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Arvo' rel='stylesheet' type='text/css'>
+	<link href="style.css" rel="stylesheet" type="text/css" media="screen" />
+
+	<script type="text/javascript" src="jquery.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$("#homepage").click(function () {
+				$("#categories a").css("color", "green");
+				$("#blogroll a").css("color", "yellow");
+				$("li h2").css("font-size", "-=2");
+				$("#search-text").css("background", "blue").css("color", "yellow").css({ "border-color": "#000", "border-width": "2px", "border-style": "solid" });
+			});
+			$(".comments").mouseenter(function (e) {
+				$(e.target).closest(".entry").css("background-color", "greenyellow");
+			});
+			$(".comments").mouseleave(function (e) {
+				$(e.target).closest(".entry").css("background-color", "");
+			});
+			$(".date").click(function (e) {
+				$(e.target).data("value", $(e.target).text());
+				$(e.target).text("Cкрыто");
+			});
+			$("#blog").click(function () {
+				$("#content div.post:odd a").removeAttr("href");
+			});
+			$("#about").click(function () {
+				$(".date").each(function () {
+					if ($(this).text() == "Cкрыто") {
+						($(this).text($(this).data("value")));
+					}
+					else $(this).css("color", "violet");
+				});
+			});
+			$("#special p span").css("color", "red");
+			$("#special .entry p span:first-child").css("font-weight", "bolder").css("font-size", "200%");
+
+			$("#content > div:nth-child(5) > div > p > a").click(function (e) {
+				e.preventDefault();
+				$("#content > div:nth-child(5) > div > table tr:odd").css("background-color", "yellow");
+				$("#content > div:nth-child(5) > div > table tr td").css("font-size", "15px");
+				$("#content > div:nth-child(5) > div > table").attr("border-spacing", 3);
+				$("#content > div:nth-child(5) > div > table tr:first-child").css("font-weight", "bolder").css("font-size", "+=2").css("background-color", "yellow");
+				$("#content > div:nth-child(5) > div > table td:last-child").each(function () {
+					$(this).text($(this).parent().index());
+				});
+				$("#content > div:nth-child(5) > div > table td:first-child").not(':first').css("background-color", "green");
+				$("#content > div:nth-child(5) > div > table td").css("border-color", "grey black");
+				$("#content > div:nth-child(5) > div > table td").css("border-style", "solid dashed");
+				$("#content > div:nth-child(5) > div > table").css("border", "solid").css("border-color", "black");
+			});
+			$("#search-submit").click(function (e) {
+				e.preventDefault();
+				$("#search-text").val(parseInt($("#sidebar > table > tbody > tr:nth-child(1) > td:nth-child(1)").text(), 10) * parseInt($("#sidebar > table > tbody > tr:nth-child(2) > td:nth-child(2)").text(), 10) - parseInt($("#sidebar > table > tbody > tr:nth-child(1) > td:nth-child(2)").text(), 10) * parseInt($("#sidebar > table > tbody > tr:nth-child(2) > td:nth-child(1)").text(), 10));
+			});
+			var newobj;
+			$("#photos").click(function () {
+				$(".post:even .entry").replaceWith('<img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"/>');
+			});
+			$(".post:even").click(function (e) {
+				$(e.target).closest($("#content > div > img")).hide();
+			});
+//#menu a:last-child
+			$("#menu > ul > li:nth-child(5) > a").click(function () {
+				$("#footer a, #footer p").css("color", "yellow").css({ 'font-size': parseInt($("#footer a").css("font-size")) * 2 + "px" });
+			});
+		});
+
+	</script>
+</head>
+
+<body>
+	<div id="wrapper">
+		<div id="wrapper2">
+			<div id="header" class="container">
+				<div id="logo">
+					<h1><a href="#">Simple <span>World</span></a></h1>
+				</div>
+				<div id="menu">
+					<ul>
+						<li class="current_page_item"><a id="homepage" href="#">Homepage</a></li>
+						<li><a id="blog" href="#">Blog</a></li>
+						<li><a id="photos" href="#">Photos</a></li>
+						<li><a id="about" href="#">About</a></li>
+						<li><a href="#">Contact</a></li>
+					</ul>
+				</div>
+			</div>
+			<!-- end #header -->
+			<div id="page">
+				<div id="content">
+					<div class="post">
+						<h2 class="title"><a href="#">Welcome to Simple World </a></h2>
+						<p class="meta"><span class="date">January 26, 2012</span><span class="posted">Posted by <a
+									href="#">Someone</a></span></p>
+						<div style="clear: both;">&nbsp;</div>
+						<div class="entry">
+							<p>This is <strong>Simple World </strong>, a free, fully standards-compliant CSS template
+								designed by FreeCssTemplates<a href="http://www.nodethirtythree.com/"></a> for <a
+									href="http://www.freecsstemplates.org/">Free CSS Templates</a>. The photo used in
+								this template is form <a href="http://pdphoto.org/">pdphoto.org</a>. This free template
+								is released under a <a href="http://creativecommons.org/licenses/by/3.0/">Creative
+									Commons Attribution 3.0</a> license, so you’re pretty much free to do whatever you
+								want with it (even use it commercially) provided you keep the links in the footer
+								intact. Aside from that, have fun with it :)</p>
+							<p>Sed lacus. Donec lectus. Nullam pretium nibh ut turpis. Nam bibendum. In nulla tortor,
+								elementum ipsum. Proin imperdiet est. Phasellus dapibus semper urna. Pellentesque
+								ornare, orci in felis. Donec ut ante. In id eros. Suspendisse lacus turpis, cursus
+								egestas at sem.</p>
+							<p class="links"><a href="#" class="more">Read More</a><a href="#" title="b0x"
+									class="comments">Comments</a></p>
+						</div>
+					</div>
+					<div class="post">
+						<h2 class="title"><a href="#">Lorem ipsum sed aliquam</a></h2>
+						<p class="meta"><span class="date">January 24, 2012</span><span class="posted">Posted by <a
+									href="#">Someone</a></span></p>
+						<div style="clear: both;">&nbsp;</div>
+						<div class="entry">
+							<p>Sed lacus. Donec lectus. Nullam pretium nibh ut turpis. Nam bibendum. In nulla tortor,
+								elementum vel, tempor at, varius non, purus. Mauris vitae nisl nec metus placerat
+								consectetuer. Donec ipsum. Proin imperdiet est. Phasellus <a href="#">dapibus semper
+									urna</a>. Pellentesque ornare, orci in consectetuer hendrerit, urna elit eleifend
+								nunc, ut consectetuer nisl felis ac diam. Etiam non felis. Donec ut ante. In id eros.
+								Suspendisse lacus turpis, cursus egestas at sem. Mauris quam enim, molestie in, rhoncus.
+							</p>
+							<p class="links"><a href="#" class="more">Read More</a><a href="#" title="b0x"
+									class="comments">Comments</a></p>
+						</div>
+					</div>
+					<div class="post" id="special">
+						<h2 class="title"><a href="#">Lorem ipsum dolore it</a></h2>
+						<p class="meta"><span class="date">January 22, 2012</span><span class="posted">Posted by <a
+									href="#">Someone</a></span></p>
+						<div style="clear: both;">&nbsp;</div>
+						<div class="entry">
+							<p><span>L</span>orem ipsum dolor sit amet, <span>consectetur adipiscing</span> elit.
+								Phasellus vel magna <span>tempus dolor</span> sodales pellentesque sit amet a sem. Donec
+								in tristique velit. Nam ipsum odio, condimentum non tincidunt ut, ultrices ac magna.
+								Aliquam quis diam quis lorem fermentum venenatis a ut nibh. Pellentesque ultricies urna
+								ipsum, ut vehicula eros. Aenean accumsan nunc sed mauris bibendum lobortis. Phasellus ut
+								massa vitae eros varius consectetur et vel orci. Aenean eu quam nisl, <span>non</span>
+								pellentesque nisi.</p>
+							<p><span>P</span>hasellus vel tortor a <span>velit ultrices</span> vehicula. Quisque quis
+								<span>nulla mauris</span>, vitae blandit tellus. Maecenas massa libero, semper nec
+								accumsan vel, vulputate sit amet tortor. Donec euismod elementum <span>purus</span>
+								in tincidunt. Cras dapibus, nisl non porta iaculis, augue nunc venenatis lectus, sit
+								amet sollicitudin turpis nisi sed dui. Cras eu velit libero, quis molestie tellus.
+								Donec odio ante, euismod ac molestie vel, viverra in leo. Etiam scelerisque vehicula
+								eleifend. Nunc vestibulum consectetur ultrices. Nullam eget eros tellus. In vitae
+								leo enim. Sed ac nibh ut orci ultricies vehicula. Suspendisse potenti. Donec congue
+								leo ac libero pretium non auctor mi cursus. <span>Integer interdum bibendum
+									eros</span>, ut viverra turpis aliquam ut. Vestibulum non purus metus.</p>
+							<p><span>S</span>uspendisse mollis tempor purus ac tristique. Sed sed <span>enim
+									turpis</span>, ac egestas quam. Pellentesque ac nisi non augue volutpat lobortis vel
+								et turpis. Nunc a commodo risus. Nulla lobortis vehicula <span>ligula</span>, a varius
+								mauris sagittis quis. Aenean justo urna, molestie ac mollis in, vulputate eget orci.
+								Phasellus elementum, ipsum non laoreet convallis, purus velit lacinia <span>erat</span>,
+								id mollis neque neque nec massa. Pellentesque habitant morbi tristique senectus et netus
+								et malesuada fames ac turpis egestas.</p>
+							<p><span>Q</span>uisque neque erat, vulputate in fermentum eu, euismod sagittis ante. Nulla
+								facilisi. Nunc erat massa, dictum commodo lobortis in, lacinia eu nibh. Pellentesque
+								habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed sed
+								metus ligula, a pretium metus. Nunc dignissim tortor orci, in blandit enim. Suspendisse
+								potenti. Phasellus molestie ipsum eu purus ultrices ut elementum tortor gravida. Nulla
+								tortor lorem, eleifend vitae suscipit a, commodo id est. Donec urna mi, rhoncus et
+								tincidunt vitae, iaculis id metus.</p>
+							<p><span>F</span>usce accumsan lectus at arcu ullamcorper sit amet porta augue blandit.
+								Vestibulum sem lorem, dignissim ut aliquam eget, molestie bibendum dui. Vestibulum
+								tincidunt porttitor dui, ac mattis ipsum condimentum ut. Fusce sit amet nisi et magna
+								aliquet tempor. Suspendisse pharetra ullamcorper auctor. Pellentesque arcu ipsum,
+								rhoncus venenatis ornare quis, aliquet ac velit. Aenean ac mi <span>nisl</span>.</p>
+						</div>
+					</div>
+					<div class="post">
+						<h2 class="title"><a href="#">Consecteteur hendrerit </a></h2>
+						<p class="meta"><span class="date">January 20, 2012</span><span class="posted">Posted by <a
+									href="#">Someone</a></span></p>
+						<div style="clear: both;">&nbsp;</div>
+						<div class="entry">
+							<p>Sed lacus. Donec lectus. Nullam pretium nibh ut turpis. Nam bibendum. In nulla tortor,
+								elementum vel, tempor at, varius non, purus. Mauris vitae nisl nec metus placerat
+								consectetuer. Donec ipsum. Proin imperdiet est. Phasellus <a href="#">dapibus semper
+									urna</a>. Pellentesque ornare, orci in consectetuer hendrerit, urna elit eleifend
+								nunc, ut consectetuer nisl felis ac diam. Etiam non felis. Donec ut ante. In id eros.
+								Suspendisse lacus turpis, cursus egestas at sem. Mauris quam enim, molestie in, rhoncus.
+							</p>
+							<p class="links"><a href="#" class="more">Read More</a><a href="#" title="b0x"
+									class="comments">Comments</a></p>
+						</div>
+					</div>
+					<div class="post">
+						<h2 class="title"><a href="#">Some tables</a></h2>
+						<div class="entry">
+							<table border="1" bordercolor="#000000" cellpadding="0" cellspacing="0">
+								<tr>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+								</tr>
+								<tr>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+								</tr>
+								<tr>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+								</tr>
+								<tr>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+								</tr>
+								<tr>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+								</tr>
+								<tr>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+								</tr>
+								<tr>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+								</tr>
+								<tr>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+								</tr>
+								<tr>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+								</tr>
+								<tr>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+								</tr>
+								<tr>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+								</tr>
+								<tr>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+								</tr>
+								<tr>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+								</tr>
+								<tr>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+								</tr>
+								<tr>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+									<td>Table Cell</td>
+								</tr>
+							</table>
+							<p class="links"><a href="#" class="more">Do More</a></p>
+						</div>
+					</div>
+					<div style="clear: both;">&nbsp;</div>
+				</div>
+				<!-- end #content -->
+				<div id="sidebar">
+					<ul>
+						<li>
+							<div id="search">
+								<form method="get" action="#">
+									<div>
+										<input type="text" name="s" id="search-text" value="" />
+										<input type="submit" id="search-submit" value="GO" />
+									</div>
+								</form>
+							</div>
+							<div style="clear: both;">&nbsp;</div>
+						</li>
+						<li>
+							<h2>Aliquam tempus</h2>
+							<p>Mauris vitae nisl nec metus placerat perdiet est. Phasellus dapibus semper consectetuer
+								hendrerit.</p>
+						</li>
+						<li id="categories">
+							<h2>Categories</h2>
+							<ul>
+								<li><a href="#">Aliquam libero</a></li>
+								<li><a href="#">Consectetuer adipiscing elit</a></li>
+								<li><a href="#">Metus aliquam pellentesque</a></li>
+								<li><a href="#">Suspendisse iaculis mauris</a></li>
+								<li><a href="#">Metus aliquam pellentesque</a></li>
+								<li><a href="#">Suspendisse iaculis mauris</a></li>
+								<li><a href="#">Urnanet non molestie semper</a></li>
+								<li><a href="#">Proin gravida orci porttitor</a></li>
+							</ul>
+						</li>
+						<li id="blogroll">
+							<h2>Blogroll</h2>
+							<ul>
+								<li><a href="#">Aliquam libero</a></li>
+								<li><a href="#">Consectetuer adipiscing elit</a></li>
+								<li><a href="#">Metus aliquam pellentesque</a></li>
+								<li><a href="#">Suspendisse iaculis mauris</a></li>
+								<li><a href="#">Metus aliquam pellentesque</a></li>
+								<li><a href="#">Suspendisse iaculis mauris</a></li>
+								<li><a href="#">Urnanet non molestie semper</a></li>
+								<li><a href="#">Proin gravida orci porttitor</a></li>
+							</ul>
+						</li>
+						<li>
+							<h2>Archives</h2>
+							<ul>
+								<li><a href="#">Aliquam libero</a></li>
+								<li><a href="#">Consectetuer adipiscing elit</a></li>
+								<li><a href="#">Metus aliquam pellentesque</a></li>
+								<li><a href="#">Suspendisse iaculis mauris</a></li>
+								<li><a href="#">Urnanet non molestie semper</a></li>
+								<li><a href="#">Proin gravida orci porttitor</a></li>
+							</ul>
+						</li>
+					</ul>
+					<table align="center" border"1" bordercolor="black">
+						<caption>Small table</caption>
+						<tr>
+							<td>13521</td>
+							<td>24573</td>
+						</tr>
+						<tr>
+							<td>39797</td>
+							<td>43566</td>
+						</tr>
+					</table>
+				</div>
+				<!-- end #sidebar -->
+				<div style="clear: both;">&nbsp;</div>
+			</div>
+			<!-- end #page -->
+			<div id="footer">
+				<p>Copyright (c) 2012 Sitename.com. All rights reserved. Design by <a
+						href="http://www.freecsstemplates.org/">Free CSS Templates</a>.</p>
+			</div>
+		</div>
+	</div>
+	<!-- end #footer -->
+</body>
+
+</html>
