@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace _4_2
@@ -15,183 +16,196 @@ namespace _4_2
         string ToFormattedString();
         void DebugPrint(TextWriter o, int depth);
     }
-    interface IIdentifierExpr : INode { }
-    interface IDescAscExprs : INode { }
+    interface IExpression : INode { }
 
-    sealed class Subquery : INode
-    {
-        public readonly SelectStmt SelectStmt;
-        public Subquery(SelectStmt selectStmt)
-        {
-            SelectStmt = selectStmt;
-        }
-
-        public void DebugPrint(TextWriter o, int depth)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string ToFormattedString()
-        {
-            throw new NotImplementedException();
-        }
-    }
     sealed class SelectStmt : INode
     {
-        public readonly IIdentifierExpr Columns;
-        public readonly string From;
-        public SelectStmt(IdentifierExprs columns, string from)
+        public IReadOnlyList<IExpression> columns;
+        public readonly IExpression fromTable;
+        public IReadOnlyList<IExpression> orderByColumns;
+        public SelectStmt(IReadOnlyList<IExpression> columns, IExpression fromTable, IReadOnlyList<IExpression> orderByColumns)
         {
-            Columns = columns;
-            From = from;
-        }
-
-        public void DebugPrint(TextWriter o, int depth)
-        {
-            throw new NotImplementedException();
+            this.columns = columns;
+            this.fromTable = fromTable;
+            this.orderByColumns = orderByColumns;
         }
 
         public string ToFormattedString()
         {
-            throw new NotImplementedException();
+            string columnsString = columns[0].ToFormattedString();
+            for (int i = 1; i < columns.Count; i++)
+                columnsString += ", " + columns[i].ToFormattedString();
+
+            string orderByColumnsString = orderByColumns[0].ToFormattedString();
+            for (int i = 1; i < orderByColumns.Count; i++)
+                orderByColumnsString += ", " + orderByColumns[i].ToFormattedString();
+
+            return
+                $"SELECT {columnsString} FROM {fromTable.ToFormattedString()} ORDER BY {orderByColumnsString}";
+        }
+        public void DebugPrint(TextWriter o, int depth)
+        {
+            o.WriteIndent(depth);
+            o.Write("new SelectStmt(\n");
+            o.WriteIndent(depth + 1);
+            o.Write("new IExpression[] {\n");
+            for (int i = 0; i < columns.Count; i++)
+            {
+                if (i > 0)
+                {
+                    o.Write(",\n");
+                }
+                columns[i].DebugPrint(o, depth + 2);
+            }
+            o.Write("\n");
+            o.WriteIndent(depth + 1);
+            o.Write("},\n");
+            o.WriteIndent(depth + 1);
+            fromTable.DebugPrint(o, depth);
+            o.Write(",\n");
+            o.WriteIndent(depth + 1);
+            o.Write("new IExpression[] {\n");
+            for (int i = 0; i < orderByColumns.Count; i++)
+            {
+                if (i > 0)
+                {
+                    o.Write(",\n");
+                }
+                orderByColumns[i].DebugPrint(o, depth + 2);
+            }
+            o.Write("\n");
+            o.WriteIndent(depth + 1);
+            o.Write("}\n");
+            o.WriteIndent(depth);
+            o.Write(")");
         }
     }
 
-    sealed class IdentifierExprs : IIdentifierExpr
+    sealed class DescAsc : IExpression
     {
-        public readonly IdentifierExpr Column;
-        public readonly IIdentifierExpr AtherColums;
+        IExpression expression;
+        string descAsc;
 
-        public IdentifierExprs(IIdentifierExpr atherColums, IdentifierExpr column)
+        public DescAsc(IExpression expression, string descAsc)
         {
-            AtherColums = atherColums;
-            Column = column;
-        }
-        public IdentifierExprs(IdentifierExpr column)
-        {
-            Column = column;
-        }
-
-        public void DebugPrint(TextWriter o, int depth)
-        {
-            throw new NotImplementedException();
+            this.expression = expression;
+            this.descAsc = descAsc;
         }
 
         public string ToFormattedString()
         {
-            throw new NotImplementedException();
+            return
+                $"{expression.ToFormattedString()} {descAsc}";
+        }
+        public void DebugPrint(TextWriter o, int depth)
+        {
+            o.WriteIndent(depth);
+            o.Write("new DescAsc(\n");
+            expression.DebugPrint(o, depth + 1);
+            o.Write(",\n");
+            o.WriteIndent(depth + 1);
+            o.Write($"\"{descAsc}\"");
+            o.Write("\n");
+            o.WriteIndent(depth);
+            o.Write(")");
         }
     }
 
-    sealed class IdentifierExpr : IIdentifierExpr
+    sealed class SumExpr : IExpression
     {
-
-        public readonly string Table;
-
-        public IdentifierExpr(string table)
+        public readonly IExpression left;
+        public readonly string operation;
+        public readonly IExpression right;
+        public SumExpr(IExpression left, string operation, IExpression right)
         {
-            Table = table;
-        }
-
-        public void DebugPrint(TextWriter o, int depth)
-        {
-            throw new NotImplementedException();
+            this.left = left;
+            this.operation = operation;
+            this.right = right;
         }
 
         public string ToFormattedString()
         {
-            throw new NotImplementedException();
+            return
+                $"{left.ToFormattedString()}{operation}{right.ToFormattedString()}";
+        }
+        public void DebugPrint(TextWriter o, int depth)
+        {
+            o.WriteIndent(depth);
+            o.Write("new SumExpr(\n");
+            left.DebugPrint(o, depth + 1);
+            o.Write(",\n");
+            o.WriteIndent(depth + 1);
+            o.Write($"\"{operation}\",\n");
+            right.DebugPrint(o, depth + 1);
+            o.Write("\n");
+            o.WriteIndent(depth);
+            o.Write(")");
         }
     }
 
-    sealed class OrderBy : INode
+    sealed class MultExpr : IExpression
     {
-        public OrderBy()
+        public readonly IExpression left;
+        public readonly string operation;
+        public readonly IExpression right;
+        public MultExpr(IExpression left, string operation, IExpression right)
         {
+            this.left = left;
+            this.operation = operation;
+            this.right = right;
         }
-
-        public void DebugPrint(TextWriter o, int depth)
-        {
-            throw new NotImplementedException();
-        }
-
         public string ToFormattedString()
         {
-            throw new NotImplementedException();
+            return
+                $"{left.ToFormattedString()}{operation}{right.ToFormattedString()}";
+        }
+        public void DebugPrint(TextWriter o, int depth)
+        {
+            o.WriteIndent(depth);
+            o.Write("new MultExpr(\n");
+            left.DebugPrint(o, depth + 1);
+            o.Write(",\n");
+            o.WriteIndent(depth + 1);
+            o.Write($"\"{operation}\",\n");
+            right.DebugPrint(o, depth + 1);
+            o.Write("\n");
+            o.WriteIndent(depth);
+            o.Write(")");
         }
     }
 
-    sealed class DescAscExprs : IDescAscExprs
+    public class Number : IExpression
     {
-        public readonly DescAscExpr Var1;
-        public readonly IDescAscExprs AtherVAr;
-
-
-        public void DebugPrint(TextWriter o, int depth)
+        public readonly string number;
+        public Number(string number)
         {
-            throw new NotImplementedException();
+            this.number = number;
         }
-
         public string ToFormattedString()
         {
-            throw new NotImplementedException();
+            return number;
+        }
+        public void DebugPrint(TextWriter o, int depth)
+        {
+            o.WriteIndent(depth);
+            o.Write($"new Number(\"{number}\")");
         }
     }
-
-    sealed class DescAscExpr : IDescAscExprs
+    public class Identifier : IExpression
     {
-        public readonly SumExpr sumExpr;
-        public readonly string descAsc;
-
-        public void DebugPrint(TextWriter o, int depth)
+        public readonly string Name;
+        public Identifier(string Name)
         {
-            throw new NotImplementedException();
+            this.Name = Name;
         }
-
         public string ToFormattedString()
         {
-            throw new NotImplementedException();
+            return Name;
         }
-    }
-
-    sealed class SumExpr : INode
-    {
-
-
         public void DebugPrint(TextWriter o, int depth)
         {
-            throw new NotImplementedException();
-        }
-
-        public string ToFormattedString()
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    sealed class MultExpr : INode
-    {
-        public void DebugPrint(TextWriter o, int depth)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string ToFormattedString()
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    sealed class Primary : INode
-    {
-        public void DebugPrint(TextWriter o, int depth)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string ToFormattedString()
-        {
-            throw new NotImplementedException();
+            o.WriteIndent(depth);
+            o.Write($"new Identifier(\"{Name}\")");
         }
     }
 
@@ -213,34 +227,29 @@ namespace _4_2
         {
             //SELECT ab, dfg FROM bla ORDER BY ab, dfg + 2 * 6 desc, df asc
             var tree = new SelectStmt(
-                new IdentifierExprs(
-                    new IdentifierExprs(
-                        new IdentifierExpr("ad")), new IdentifierExpr("dfg")), "bla");
+                new IExpression[]
+                {
+                    new Identifier("ab"),
+                    new Identifier("dfg")
+                },
+                new Identifier("bla"),
+                new IExpression[]
+                {
+                    new Identifier("ab"),
+                    new DescAsc(
+                        new SumExpr(
+                            new Identifier("dfg"), "+",
+                                new MultExpr(new Number("2"),"*",
+                                    new Number("6"))),"desc"),
+                    new DescAsc(new Identifier("df"),"asc")
+                });
 
 
 
 
-
-
-
-
-
-
-            //// SELECT 1 FROM (SELECT 2 FROM (SELECT 3 FROM t1.t2))
-            //var tree = new SelectStmt(
-            //    1,
-            //    new Subquery(
-            //        new SelectStmt(
-            //            2,
-            //            new Subquery(
-            //                new SelectStmt(
-            //                    3,
-            //                    new Table("t1", "t2")
-            //                    )))));
-            //// Отформатированная строка
-            //Console.WriteLine(tree.ToFormattedString());
-            //// Отладочная строка
-            //Console.WriteLine(tree.ToDebugString());
+            Console.WriteLine(tree.ToFormattedString());
+            // Отладочная строка
+            Console.WriteLine(tree.ToDebugString());
         }
     }
 }
