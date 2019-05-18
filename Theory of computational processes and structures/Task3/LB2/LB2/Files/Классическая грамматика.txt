@@ -26,4 +26,4 @@ Primary: identifier
 Primary: '(' SumExpr ')'
 
 Стартовый нетерминал: SelectStmt
-Алфавит: 'SELECT' 'FROM' identifier 'WHERE' 'Order BY' number 'asc' ' desc' '+' '*' '-' '/' ',' '(' ')', number, identifier
+Алфавит: 'SELECT' 'FROM' identifier 'WHERE' 'Order BY' number 'asc' ' desc' '+' '*' '-' '/' ',' '(' ')'

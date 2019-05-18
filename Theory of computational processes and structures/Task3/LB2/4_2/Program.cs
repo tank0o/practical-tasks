@@ -20,10 +20,10 @@ namespace _4_2
 
     sealed class SelectStmt : INode
     {
-        public IReadOnlyList<IExpression> columns;
-        public readonly IExpression fromTable;
-        public IReadOnlyList<IExpression> orderByColumns;
-        public SelectStmt(IReadOnlyList<IExpression> columns, IExpression fromTable, IReadOnlyList<IExpression> orderByColumns)
+        public IReadOnlyList<string> columns;
+        public readonly string fromTable;
+        public IReadOnlyList<DescAsc> orderByColumns;
+        public SelectStmt(IReadOnlyList<string> columns, string fromTable, IReadOnlyList<DescAsc> orderByColumns)
         {
             this.columns = columns;
             this.fromTable = fromTable;
@@ -32,39 +32,40 @@ namespace _4_2
 
         public string ToFormattedString()
         {
-            string columnsString = columns[0].ToFormattedString();
+            string columnsString = columns[0];
             for (int i = 1; i < columns.Count; i++)
-                columnsString += ", " + columns[i].ToFormattedString();
+                columnsString += ", " + columns[i];
 
             string orderByColumnsString = orderByColumns[0].ToFormattedString();
             for (int i = 1; i < orderByColumns.Count; i++)
                 orderByColumnsString += ", " + orderByColumns[i].ToFormattedString();
 
             return
-                $"SELECT {columnsString} FROM {fromTable.ToFormattedString()} ORDER BY {orderByColumnsString}";
+                $"SELECT {columnsString} FROM {fromTable} ORDER BY {orderByColumnsString}";
         }
         public void DebugPrint(TextWriter o, int depth)
         {
             o.WriteIndent(depth);
             o.Write("new SelectStmt(\n");
             o.WriteIndent(depth + 1);
-            o.Write("new IExpression[] {\n");
+            o.Write("new string[] {\n");
             for (int i = 0; i < columns.Count; i++)
             {
                 if (i > 0)
                 {
                     o.Write(",\n");
                 }
-                columns[i].DebugPrint(o, depth + 2);
+                o.WriteIndent(depth + 2);
+                o.Write("\""+columns[i]+"\"");
             }
             o.Write("\n");
             o.WriteIndent(depth + 1);
             o.Write("},\n");
             o.WriteIndent(depth + 1);
-            fromTable.DebugPrint(o, depth);
+            o.Write("\""+fromTable+ "\"");
             o.Write(",\n");
             o.WriteIndent(depth + 1);
-            o.Write("new IExpression[] {\n");
+            o.Write("new DescAsc[] {\n");
             for (int i = 0; i < orderByColumns.Count; i++)
             {
                 if (i > 0)
@@ -81,10 +82,10 @@ namespace _4_2
         }
     }
 
-    sealed class DescAsc : IExpression
+    sealed class DescAsc : INode
     {
-        IExpression expression;
-        string descAsc;
+        public readonly IExpression expression;
+        public readonly string descAsc;
 
         public DescAsc(IExpression expression, string descAsc)
         {
@@ -111,12 +112,12 @@ namespace _4_2
         }
     }
 
-    sealed class SumExpr : IExpression
+    sealed class Binary : IExpression
     {
         public readonly IExpression left;
         public readonly string operation;
         public readonly IExpression right;
-        public SumExpr(IExpression left, string operation, IExpression right)
+        public Binary(IExpression left, string operation, IExpression right)
         {
             this.left = left;
             this.operation = operation;
@@ -131,7 +132,7 @@ namespace _4_2
         public void DebugPrint(TextWriter o, int depth)
         {
             o.WriteIndent(depth);
-            o.Write("new SumExpr(\n");
+            o.Write("new Binary(\n");
             left.DebugPrint(o, depth + 1);
             o.Write(",\n");
             o.WriteIndent(depth + 1);
@@ -143,38 +144,7 @@ namespace _4_2
         }
     }
 
-    sealed class MultExpr : IExpression
-    {
-        public readonly IExpression left;
-        public readonly string operation;
-        public readonly IExpression right;
-        public MultExpr(IExpression left, string operation, IExpression right)
-        {
-            this.left = left;
-            this.operation = operation;
-            this.right = right;
-        }
-        public string ToFormattedString()
-        {
-            return
-                $"{left.ToFormattedString()}{operation}{right.ToFormattedString()}";
-        }
-        public void DebugPrint(TextWriter o, int depth)
-        {
-            o.WriteIndent(depth);
-            o.Write("new MultExpr(\n");
-            left.DebugPrint(o, depth + 1);
-            o.Write(",\n");
-            o.WriteIndent(depth + 1);
-            o.Write($"\"{operation}\",\n");
-            right.DebugPrint(o, depth + 1);
-            o.Write("\n");
-            o.WriteIndent(depth);
-            o.Write(")");
-        }
-    }
-
-    public class Number : IExpression
+    sealed public class Number : IExpression
     {
         public readonly string number;
         public Number(string number)
@@ -191,7 +161,7 @@ namespace _4_2
             o.Write($"new Number(\"{number}\")");
         }
     }
-    public class Identifier : IExpression
+    sealed public class Identifier : IExpression
     {
         public readonly string Name;
         public Identifier(string Name)
@@ -227,26 +197,23 @@ namespace _4_2
         {
             //SELECT ab, dfg FROM bla ORDER BY ab, dfg + 2 * 6 desc, df asc
             var tree = new SelectStmt(
-                new IExpression[]
+                new string[]
                 {
-                    new Identifier("ab"),
-                    new Identifier("dfg")
+                    "ab",
+                    "dfg"
                 },
-                new Identifier("bla"),
-                new IExpression[]
+                "bla",
+                new DescAsc[]
                 {
-                    new Identifier("ab"),
                     new DescAsc(
-                        new SumExpr(
+                        new Identifier("ab"),""),
+                    new DescAsc(
+                        new Binary(
                             new Identifier("dfg"), "+",
-                                new MultExpr(new Number("2"),"*",
-                                    new Number("6"))),"desc"),
+                            new Binary(new Number("2"),"*",
+                                new Number("6"))),"desc"),
                     new DescAsc(new Identifier("df"),"asc")
                 });
-
-
-
-
             Console.WriteLine(tree.ToFormattedString());
             // Отладочная строка
             Console.WriteLine(tree.ToDebugString());
