@@ -24,8 +24,8 @@ namespace MongoDB
             public string Name { get; set; }
             [BsonIgnoreIfNull]
             public Group Group { get; set; }
-            public MongoDBRef Ref;
-            public ObjectId idGroup;
+            public MongoDBRef Ref { get; set; }
+            public ObjectId idGroup { get; set; }
 
             static public string Print(Student s)
             {
@@ -108,7 +108,7 @@ namespace MongoDB
                                 {
                                     Console.WriteLine(i++ + ":" + Group.Print(doc));
                                 }
-                                Console.Write("ГРуппа");
+                                Console.Write("Группа:");
                                 groupId = Convert.ToInt16(Console.ReadLine());
                             } while (groupId >= groups.Count || groupId < 0);
 
@@ -154,7 +154,7 @@ namespace MongoDB
                                 {
                                     Console.WriteLine(i++ + ":" + Group.Print(doc));
                                 }
-                                Console.Write("ГРуппа");
+                                Console.Write("Группа:");
                                 groupId = Convert.ToInt16(Console.ReadLine());
                             } while (groupId >= groups.Count || groupId < 0);
 
@@ -177,7 +177,7 @@ namespace MongoDB
                                 {
                                     Console.WriteLine(i++ + ":" + Group.Print(doc));
                                 }
-                                Console.Write("ГРуппа");
+                                Console.Write("Группа:");
                                 groupId = Convert.ToInt16(Console.ReadLine());
                             } while (groupId >= groups.Count || groupId < 0);
 
@@ -221,7 +221,7 @@ namespace MongoDB
                                 {
                                     Console.WriteLine(i++ + ":" + Group.Print(doc));
                                 }
-                                Console.Write("ГРуппа");
+                                Console.Write("Группа:");
                                 groupId = Convert.ToInt16(Console.ReadLine());
                             } while (groupId >= groups.Count || groupId < 0);
 
@@ -289,11 +289,9 @@ namespace MongoDB
         {
             var collection = database.GetCollection<BsonDocument>("NewCollection");
             var builder = Builders<BsonDocument>.Filter;
-            FilterDefinition<BsonDocument> filter;
-            if (group == null)
-                filter = builder.Gte("Name", name);
-            else
-                filter = builder.Gte("Name", name) & builder.Eq("Group", group);
+            var filter = new BsonDocument();
+            if(name.Length !=0)
+                filter =new BsonDocument("Name", new BsonDocument("$eq", name));
 
             var students = collection.Find(filter).ToList();
             return students;
