@@ -1,0 +1,26 @@
+SELECT ab, dfg FROM bla ORDER BY ab, dfg + 2 * 6 desc, df asc
+
+SelectStmt 
+SELECT IdentifierExprs FROM identifier ORDER BY DescAscExprs 
+SELECT IdentifierExprs , identifier FROM identifier ORDER BY DescAscExprs 
+SELECT identifier , identifier FROM identifier ORDER BY DescAscExprs 
+SELECT identifier , identifier FROM identifier ORDER BY DescAscExprs , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY DescAscExprs , DescAscExpr , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY DescAscExpr , DescAscExpr , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY SumExpr , DescAscExpr , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY MultExpr , DescAscExpr , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY Primary , DescAscExpr , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , DescAscExpr , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , SumExpr 'desc' , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , SumExpr + MultExpr desc , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , MultExpr + MultExpr desc , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , Primary + MultExpr desc , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , identifier + MultExpr desc , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , identifier + MultExpr * Primary desc , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , identifier + Primary * Primary desc , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , identifier + number * Primary desc , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , identifier + number * number desc , DescAscExpr 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , identifier + number * number desc , SumExpr asc 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , identifier + number * number desc , MultExpr asc 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , identifier + number * number desc , Primary asc 
+SELECT identifier , identifier FROM identifier ORDER BY identifier , identifier + number * number desc , df asc 

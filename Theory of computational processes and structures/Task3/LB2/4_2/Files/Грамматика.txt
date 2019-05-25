@@ -1,0 +1,28 @@
+SELECT ab, dfg FROM bla ORDER BY ab, dfg + 2 * 6 desc, df asc
+
+*SelectStmt:
+	'SELECT' IdentifierExprs 'FROM' identifier 'ORDER' 'BY' DescAscExprs
+
+IdentifierExprs:
+	IdentifierExprs ',' identifier
+	identifier
+
+DescAscExprs: 
+	DescAscExprs ',' DescAscExpr 
+	DescAscExpr
+
+DescAscExpr: 
+	SumExpr ('desc'|'asc')?
+
+SumExpr:
+	SumExpr ('+'|'-') MultExpr 
+	MultExpr
+	
+MultExpr:
+	MultExpr ('*'|'/') Primary 
+	Primary
+	
+Primary:
+	number
+	identifier
+	'(' SumExpr ')'

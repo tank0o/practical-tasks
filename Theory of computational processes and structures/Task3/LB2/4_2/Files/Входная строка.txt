@@ -1,0 +1,2 @@
+Вариант 3
+SELECT ab, dfg FROM bla ORDER BY ab, dfg + 2 * 6 desc, df asc

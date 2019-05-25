@@ -1,0 +1,149 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Text.RegularExpressions;
+using System.IO;
+
+namespace LB2
+{
+    static class Program
+    {
+        //int 32.4
+        static void Main()
+        {
+            int f = 3;
+            double ew = 3.43;
+
+            string origin_path = "../../Program.cs";
+            string answer_path = "../../Files/answer.txt";
+            string file = File.ReadAllText(origin_path);
+            string r =
+               
+                @"(?<Real>\d+\.\d+)|" +
+                @"(?<Commentary>//[^\n\r]*\r?\n)|" +
+                @"(?<Punctuation>[+-/!=<>]=|=[<>]|\+\+|--|\|\||&&|[\[\];.,{}/!%&*()+=<>|-])|" +
+                @"(?<Integer>\d+)|" +
+                @"(?<Identifier>[_A-Za-z][_A-Za-z0-9]*)|" +
+                @"(?<String>@""([^""]|"""")*""|""[^\\""\n]*"")|" +
+                @"(?<WhiteSpace>\s+)";
+            Regex regex = new Regex(r, RegexOptions.ExplicitCapture);
+
+            OutputInFileAndConsole(Lexer.GetTokens(regex, file), answer_path);
+
+            FileComparison(answer_path, origin_path);
+        }
+        static void OutputInFileAndConsole(IEnumerable<Token> Tokens, string file_path)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach (Token token in Tokens)
+            {
+                Console.WriteLine(token);
+                stringBuilder.Append(token.Lexeme);
+            }
+            File.WriteAllText(file_path, stringBuilder.ToString());
+        }
+        static void FileComparison(string origin_path, string result_path)
+        {
+            string origin = File.ReadAllText(origin_path);
+            string result = File.ReadAllText(result_path);
+            for (int k = 0; k < origin.Length; k++)
+            {
+                if (result[k] != origin[k] || k > result.Length || k > origin.Length)
+                {
+                    throw new Exception(string.Format("Ошибка!"));
+                }
+            }
+            if (origin != result)
+                throw new Exception();
+        }
+    }
+    enum TokenType
+    {
+        Identifier,
+        Commentary,
+        Punctuation,
+        Integer,
+        Real,
+        String,
+        WhiteSpace,
+        Char,
+    }
+    sealed class Token
+    {
+        public TokenType Type { get; }
+        public string Lexeme { get; }
+        public Token(TokenType type, string lexeme)
+        {
+            Type = type;
+            Lexeme = lexeme;
+        }
+        public override string ToString()
+        {
+            return string.Format("{1} - '{0}'", Lexeme, Type);
+        }
+    }
+    static class Lexer
+    {
+        public static IEnumerable<Token> GetTokens(Regex regex, string s)
+        {
+            int lastPos = 0;
+            for (var m = regex.Match(s); m.Success; m = m.NextMatch())
+            {
+                if (lastPos != m.Index)
+                {
+                    throw new Exception("Кривая строка");
+                }
+                lastPos = m.Index + m.Length;
+                if (m.Groups["Identifier"].Success)
+                {
+                    yield return new Token(TokenType.Identifier, m.Groups["Identifier"].Value);
+                }
+                else if (m.Groups["Commentary"].Success)
+                {
+                    yield return new Token(TokenType.Commentary, m.Groups["Commentary"].Value);
+                }
+                else if (m.Groups["Punctuation"].Success)
+                {
+                    yield return new Token(TokenType.Punctuation, m.Groups["Punctuation"].Value);
+                }
+                else if (m.Groups["Integer"].Success)
+                {
+                    yield return new Token(TokenType.Integer, m.Groups["Integer"].Value);
+                }
+                else if (m.Groups["Real"].Success)
+                {
+                    yield return new Token(TokenType.Real, m.Groups["Real"].Value);
+                }
+                else if (m.Groups["String"].Success)
+                {
+                    yield return new Token(TokenType.String, m.Groups["String"].Value);
+                }
+                else if (m.Groups["WhiteSpace"].Success)
+                {
+                    yield return new Token(TokenType.WhiteSpace, m.Groups["WhiteSpace"].Value);
+                }
+                else
+                {
+                    throw new Exception("Кривая регулярка");
+                }
+            }
+            if (lastPos != s.Length)
+            {
+                int t = 0;
+                t++;
+                t--;
+                bool b = (t != 0) || true;
+
+                throw new Exception("Кривая строка");
+            }
+        }
+    }
+}
+//asddsasasds3ou 23y74238yyh jfhskh
+
+
+       
+      
+

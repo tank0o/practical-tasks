@@ -1,0 +1,29 @@
+﻿Вариант 3
+SELECT ab, dfg FROM bla ORDER BY ab, dfg + 2 * 6 desc, df asc
+
+SelectStmt: 'SELECT' IdentifierExprs 'FROM' identifier 'ORDER' 'BY' DescAscExprs
+
+IdentifierExprs: IdentifierExprs ',' identifier
+IdentifierExprs: identifier
+
+DescAscExprs: DescAscExprs ',' DescAscExpr
+DescAscExprs: DescAscExpr
+
+DescAscExpr: SumExpr 'desc'
+DescAscExpr: SumExpr 'asc'
+DescAscExpr: SumExpr
+
+SumExpr: SumExpr '+' MultExpr
+SumExpr: SumExpr '-' MultExpr
+SumExpr: MultExpr
+
+MultExpr: MultExpr '*' Primary
+MultExpr: MultExpr '/' Primary
+MultExpr: Primary
+
+Primary: number
+Primary: identifier
+Primary: '(' SumExpr ')'
+
+Стартовый нетерминал: SelectStmt
+Алфавит: 'SELECT' 'FROM' identifier 'WHERE' 'Order BY' number 'asc' ' desc' '+' '*' '-' '/' ',' '(' ')'
