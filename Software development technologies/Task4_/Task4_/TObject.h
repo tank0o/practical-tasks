@@ -1,4 +1,7 @@
 #pragma once
+
+using namespace std;
+
 class TObject
 {
 public:
