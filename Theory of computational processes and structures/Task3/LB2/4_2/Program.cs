@@ -4,21 +4,17 @@ using System.IO;
 
 namespace _4_2
 {
-    static class TextWriterExtensions
-    {
-        public static void WriteIndent(this TextWriter o, int depth)
-        {
-            o.Write(new string(' ', depth * 2));
-        }
-    }
-    interface INode
+    public interface INode
     {
         string ToFormattedString();
         void DebugPrint(TextWriter o, int depth);
-    }
-    interface IExpression : INode { }
+        string Accept(INodeVisitor<string> v);
+        void Accept(INodeVisitor v);
 
-    sealed class SelectStmt : INode
+    }
+    public interface IExpression : INode { }
+
+    public class SelectStmt : INode
     {
         public IReadOnlyList<string> columns;
         public readonly string fromTable;
@@ -28,6 +24,15 @@ namespace _4_2
             this.columns = columns;
             this.fromTable = fromTable;
             this.orderByColumns = orderByColumns;
+        }
+
+        public string Accept(INodeVisitor<string> v)
+        {
+            return v.Visit(this);
+        }
+        public void Accept(INodeVisitor v)
+        {
+            v.Visit(this);
         }
 
         public string ToFormattedString()
@@ -56,13 +61,13 @@ namespace _4_2
                     o.Write(",\n");
                 }
                 o.WriteIndent(depth + 2);
-                o.Write("\""+columns[i]+"\"");
+                o.Write("\"" + columns[i] + "\"");
             }
             o.Write("\n");
             o.WriteIndent(depth + 1);
             o.Write("},\n");
             o.WriteIndent(depth + 1);
-            o.Write("\""+fromTable+ "\"");
+            o.Write("\"" + fromTable + "\"");
             o.Write(",\n");
             o.WriteIndent(depth + 1);
             o.Write("new DescAsc[] {\n");
@@ -82,37 +87,65 @@ namespace _4_2
         }
     }
 
-    sealed class DescAsc : INode
+    public enum EDescAsc
+    {
+        desc,
+        asc,
+        NULL
+    }
+
+    public class DescAsc : INode
     {
         public readonly IExpression expression;
-        public readonly string descAsc;
+        public readonly EDescAsc descAsc;
 
-        public DescAsc(IExpression expression, string descAsc)
+        public DescAsc(IExpression expression, EDescAsc descAsc)
         {
             this.expression = expression;
             this.descAsc = descAsc;
         }
 
+        public string Accept(INodeVisitor<string> v)
+        {
+            return v.Visit(this);
+        }
+        public void Accept(INodeVisitor v)
+        {
+            v.Visit(this);
+        }
+
         public string ToFormattedString()
         {
+            string descAscStr = "";
+            if (descAsc == EDescAsc.asc)
+                descAscStr = "asc";
+            else if (descAsc == EDescAsc.desc)
+                descAscStr = "desc";
             return
-                $"{expression.ToFormattedString()} {descAsc}";
+                $"{expression.ToFormattedString()} {descAscStr }";
         }
         public void DebugPrint(TextWriter o, int depth)
         {
+            string descAscStr = "";
+            if (descAsc == EDescAsc.asc)
+                descAscStr = "EDescAsc.asc";
+            else if (descAsc == EDescAsc.desc)
+                descAscStr = "EDescAsc.desc";
+            else descAscStr = "EDescAsc.NULL";
+
             o.WriteIndent(depth);
             o.Write("new DescAsc(\n");
             expression.DebugPrint(o, depth + 1);
             o.Write(",\n");
             o.WriteIndent(depth + 1);
-            o.Write($"\"{descAsc}\"");
+            o.Write(descAscStr);
             o.Write("\n");
             o.WriteIndent(depth);
             o.Write(")");
         }
     }
 
-    sealed class Binary : IExpression
+    public class Binary : IExpression
     {
         public readonly IExpression left;
         public readonly string operation;
@@ -122,6 +155,15 @@ namespace _4_2
             this.left = left;
             this.operation = operation;
             this.right = right;
+        }
+
+        public string Accept(INodeVisitor<string> v)
+        {
+            return v.Visit(this);
+        }
+        public void Accept(INodeVisitor v)
+        {
+            v.Visit(this);
         }
 
         public string ToFormattedString()
@@ -151,6 +193,16 @@ namespace _4_2
         {
             this.number = number;
         }
+
+        public string Accept(INodeVisitor<string> v)
+        {
+            return v.Visit(this);
+        }
+        public void Accept(INodeVisitor v)
+        {
+            v.Visit(this);
+        }
+
         public string ToFormattedString()
         {
             return number;
@@ -168,6 +220,16 @@ namespace _4_2
         {
             this.Name = Name;
         }
+
+        public string Accept(INodeVisitor<string> v)
+        {
+            return v.Visit(this);
+        }
+        public void Accept(INodeVisitor v)
+        {
+            v.Visit(this);
+        }
+
         public string ToFormattedString()
         {
             return Name;
@@ -195,28 +257,35 @@ namespace _4_2
     {
         static void Main()
         {
-            //SELECT ab, dfg FROM bla ORDER BY ab, dfg + 2 * 6 desc, df asc
-            var tree = new SelectStmt(
-                new string[]
-                {
-                    "ab",
-                    "dfg"
-                },
-                "bla",
-                new DescAsc[]
-                {
-                    new DescAsc(
-                        new Identifier("ab"),""),
-                    new DescAsc(
-                        new Binary(
-                            new Identifier("dfg"), "+",
-                            new Binary(new Number("2"),"*",
-                                new Number("6"))),"desc"),
-                    new DescAsc(new Identifier("df"),"asc")
-                });
-            Console.WriteLine(tree.ToFormattedString());
-            // Отладочная строка
-            Console.WriteLine(tree.ToDebugString());
+            string s = "SELECT ab, dfg FROM bla ORDER BY ab, dfg + 2 * 6 desc, df asc";
+            s = "SELECT ab, dfg FROM bla ORDER BY 1+2+3 asc";
+            //var tree = new SelectStmt(
+            //    new string[]
+            //    {
+            //        "ab",
+            //        "dfg"
+            //    },
+            //    "bla",
+            //    new DescAsc[]
+            //    {
+            //        new DescAsc(
+            //            new Identifier("ab"),""),
+            //        new DescAsc(
+            //            new Binary(
+            //                new Identifier("dfg"), "+",
+            //                new Binary(new Number("2"),"*",
+            //                    new Number("6"))),"desc"),
+            //        new DescAsc(new Identifier("df"),"asc")
+            //    });
+            //Console.WriteLine(tree.ToFormattedString());
+            //// Отладочная строка
+            //Console.WriteLine(tree.ToDebugString());
+
+            var tree = new Parser(s).SelectStmt();
+            ToFormattedString interpreter = new ToFormattedString();
+            Console.WriteLine(tree.Accept(interpreter));
+            DebugPrint debugPrint = new DebugPrint(tree);
+            Console.WriteLine(debugPrint.result);
         }
     }
 }

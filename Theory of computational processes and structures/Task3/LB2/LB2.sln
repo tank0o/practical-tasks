@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.156
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LB2", "LB2\LB2.csproj", "{68DA0400-3044-4217-86B7-4F9FAE4A8B84}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "4_2", "4_2\4_2.csproj", "{7BF4798F-97DA-4B4A-9C21-7B226A52E912}"
 EndProject
 Global
@@ -13,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{68DA0400-3044-4217-86B7-4F9FAE4A8B84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{68DA0400-3044-4217-86B7-4F9FAE4A8B84}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{68DA0400-3044-4217-86B7-4F9FAE4A8B84}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{68DA0400-3044-4217-86B7-4F9FAE4A8B84}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7BF4798F-97DA-4B4A-9C21-7B226A52E912}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7BF4798F-97DA-4B4A-9C21-7B226A52E912}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BF4798F-97DA-4B4A-9C21-7B226A52E912}.Release|Any CPU.ActiveCfg = Release|Any CPU
