@@ -1,0 +1,370 @@
+db.product.createIndex({"maker" : 1, "products.models.model" : 1}, {name: "maker_model", "unique" : true})
+db.product.createIndex({"maker" : 1, "product.type" : 1}, {name: "_type_", "unique" : true})
+db.product.getIndexes()
+
+6.
+db.createView("task6", "product", [
+    {
+        $match: 
+        {
+            'products.type': {$eq : "Laptop"},
+            'products.models.specifications.hd' : {$gte: 10}
+        }
+    },
+    {
+        $unwind : "$products"
+    },
+    {
+        $unwind : "$products.models"
+    },
+    {
+        $unwind : "$products.models.specifications"
+    },
+    {
+        $match: 
+        {
+            'products.type': {$eq : "Laptop"},
+            'products.models.specifications.hd' : {$gte: 10}
+        }
+    },
+    { 
+        $group:
+        {
+            _id : 
+            {
+                maker: "$maker",
+                speed: "$products.models.specifications.speed"
+            }
+            
+        } 
+    },
+    {
+        $replaceRoot : { newRoot : "$_id"}
+    }
+])
+
+7.
+db.createView("task7", "product",[
+    {
+        $match: 
+        {
+            "maker": {$eq : "B"}
+        }
+    },
+    {
+        $unwind : "$products"
+    },
+    {
+        $unwind : "$products.models"
+    },
+    {
+        $unwind : "$products.models.specifications"
+    },
+    { 
+        $group:
+        {
+            _id : 
+            {
+                model: "$products.models.model",
+                price: "$products.models.specifications.price"
+            }
+            
+        } 
+    },
+    {
+        $replaceRoot : { newRoot : "$_id"}
+    }
+])
+
+8.
+db.product.aggregate([
+    {
+         $match: 
+        {
+            'products.type' : {$eq : "PC", $ne: "Laptop"}
+        }
+    },
+    {
+        $project:{
+            _id : 0,
+            maker : 1
+        }
+    }
+])
+
+18.
+db.product.aggregate([
+    {
+        $unwind : "$products"
+    },
+    {
+        $match: 
+        {
+            'products.type': {$eq : "Printer"}
+        }
+    },
+    {
+        $unwind : "$products.models"
+    },
+    {
+        $unwind : "$products.models.specifications"
+    },
+    {
+        $match: 
+        {
+            'products.models.specifications.color': {$eq : "y"}
+        }
+    },
+    {
+        $group:
+        {
+          _id: "$maker",
+          minPrice: { $min: "$products.models.specifications.price" }
+        }
+    },
+    {
+        $sort:
+        {
+            minPrice: 1
+        }
+    },
+    {
+        $limit : 1
+    }
+]);
+
+14.
+db.createView("task14", "product", [
+    {
+        $match: 
+        {
+            'products' : {$size : 1}
+        }
+    },
+    {
+        $unwind : "$products"
+    },
+    {
+        $unwind : "$products.models"
+    },
+    {
+        $unwind : "$products.models.specifications"
+    },
+    { 
+        $group:
+        {
+            _id : "$maker", 
+            count: { $sum: 1}
+        } 
+    },
+    {
+        $match: 
+        {
+            count : {$gt : 1}
+        }
+    },
+    {
+        $project:
+        {
+            _id: 1
+        }
+    }
+])
+
+25.
+db.createView("task25", "product", [
+    {
+        $unwind : "$products"
+    },
+    {
+        $match: 
+        {
+            'products.type' : {$eq: "PC"} 
+        }
+    },
+    {
+        $unwind : "$products.models"
+    },
+    {
+        $unwind : "$products.models.specifications"
+    },
+    {
+        $group:{
+            _id: "$products.models.specifications.ram",
+            temp : 
+            {
+                $addToSet: 
+                {
+                    maker: "$maker",
+                    speed: "$products.models.specifications.speed"
+                }
+            }
+        }
+    },
+    {
+        $sort:{
+            _id : 1
+        }
+    },
+    {
+        $limit : 1
+    },
+     {
+        $unwind : "$temp"
+    },
+    {
+        $group:{
+            _id: "$temp.speed",
+            maker: 
+            {
+                $addToSet: "$temp.maker"
+            }
+        }
+    },
+    {
+        $sort:{
+            _id : -1
+        }
+    },
+    {
+        $limit : 1
+    },
+    {
+        $project :{
+            _id : 0,
+            maker : 1
+        }
+    }
+])
+
+58.
+db.createView("task58", "product",[
+    {
+        $unwind : "$products"
+    },
+    {
+        $project:{
+            maker : 1,
+            products : 1,
+            countModels: {$size: "$products.models"}
+        }
+    },
+    {
+        $unwind : "$products.models"
+    },
+    {
+        $project:{
+            maker : 1,
+            products : "$products.type",
+            countModels: 1,
+            countSpec : {$size: "$products.models.specifications"}
+        }
+    },
+    { 
+        $group:
+        {
+            _id : 
+            {
+                maker: "$maker",
+                type: "$products"
+            },
+            totalSpec : {$sum : "$countSpec"}
+        } 
+    },
+    { 
+        $group:
+        {
+            _id : "$_id.maker",
+            totalCount : {$sum : "$totalSpec"},
+            types:{
+                $addToSet:{
+                    type: "$_id.type",
+                    totalSpec : "$totalSpec"
+                }
+            }
+        } 
+    },
+    {
+        $unwind : "$types"
+    },
+    {
+        $project:{
+            _id : 0,
+            maker : "$_id",
+            type : "$types.type",
+            prc : {$divide:[
+              {
+                  $subtract:[
+                      {
+                          $multiply:[{
+                              $multiply : 
+                              [{
+                                  $divide : ["$types.totalSpec", "$totalCount"]}, 100]},100]},
+                      {
+                          $mod:
+                          [{
+                              $multiply:
+                              [{
+                                  $multiply : 
+                                  [{
+                                      $divide : ["$types.totalSpec", "$totalCount"]
+                                    }, 
+                                        100
+                                    ]},
+                                100
+                                ]}, 1
+                            ]}
+              ]},
+            100]}
+        }
+    }
+])
+
+97.
+db.product.aggregate([
+    {
+        $unwind : "$products"
+    },
+    {
+        $match: 
+        {
+            'products.type': {$eq : "Laptop"}
+        }
+    },
+    {
+        $unwind : "$products.models"
+    },
+    {
+        $unwind : "$products.models.specifications"
+    },
+    {
+        $replaceRoot : { newRoot : "$products.models.specifications"}
+    },
+    {
+        $project : {
+            speed: 1,
+            ram : 1,
+            price: 1,
+            screen : 1,
+            speedRam : { $divide: [ "$speed", "$ram" ] },
+            priceSpeed : { $divide: [ "$price", "$speed" ] },
+            ramScreen : { $divide: [ "$ram", "$screen" ] }
+        }
+    },
+    {
+        $match: 
+        {
+            'speedRam': {$gte : 2},
+            'priceSpeed': {$gte : 2},
+            'ramScreen': {$gte : 2}
+        }
+    },
+    {
+        $project : {
+            speed: 1,
+            ram : 1,
+            price: 1,
+            screen : 1
+        }
+    }
+])
