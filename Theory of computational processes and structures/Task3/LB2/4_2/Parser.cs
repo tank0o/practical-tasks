@@ -116,13 +116,13 @@ namespace _4_2
         IExpression ParseBinarySum()
         {
             var left = ParseBinaryMult();
-            if (SkipIf("+"))
+            while (true)
             {
-                left = new Binary(left, "+", ParseBinarySum());
-            }
-            else if (SkipIf("-"))
-            {
-                left = new Binary(left, "-", ParseBinarySum());
+                if (SkipIf("+"))
+                    left = new Binary(left, "+", ParseBinaryMult());
+                else if (SkipIf("-"))
+                    left = new Binary(left, "-", ParseBinaryMult());
+                else break;
             }
             return left;
         }
@@ -133,17 +133,9 @@ namespace _4_2
             while (true)
             {
                 if (SkipIf("*"))
-                {
-                    var right = ParseBinaryMult();
-                    left = new Binary(left, "*", right);
-                    break;
-                }
+                    left = new Binary(left, "*", ParsePrimary());
                 else if (SkipIf("/"))
-                {
-                    var right = ParseBinaryMult();
-                    left = new Binary(left, "/", right);
-                    break;
-                }
+                    left = new Binary(left, "/", ParsePrimary());
                 else break;
             }
             return left;
@@ -154,7 +146,7 @@ namespace _4_2
             IExpression res;
             if (SkipIf("("))
             {
-                var t = ParseBinarySum();
+                var t = new Parentheses(ParseBinarySum());
                 Expect(")");
                 return t;
             }

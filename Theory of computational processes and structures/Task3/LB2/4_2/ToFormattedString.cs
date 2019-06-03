@@ -8,11 +8,12 @@ namespace _4_2
 {
     public interface INodeVisitor<T>
     {
-        T Visit(SelectStmt obj);
-        T Visit(DescAsc obj);
-        T Visit(Binary obj);
-        T Visit(Number number);
-        T Visit(Identifier identifier);
+        T VisitSelectStmt(SelectStmt obj);
+        T VisitDescAsc(DescAsc obj);
+        T VisitBinary(Binary obj);
+        T VisitNumber(Number number);
+        T VisitIdentifier(Identifier identifier);
+        T VisitParentheses(Parentheses parentheses);
     }
     public interface IAcceptFormatted<T>
     {
@@ -25,7 +26,7 @@ namespace _4_2
         {
             return node.Accept(this);
         }
-        public string Visit(SelectStmt obj)
+        public string VisitSelectStmt(SelectStmt obj)
         {
             string columnsString = obj.columns[0];
             for (int i = 1; i < obj.columns.Count; i++)
@@ -38,7 +39,7 @@ namespace _4_2
             return
                 $"SELECT {columnsString} FROM {obj.fromTable} ORDER BY {orderByColumnsString}";
         }
-        public string Visit(DescAsc obj)
+        public string VisitDescAsc(DescAsc obj)
         {
             string descAscStr = "";
             if (obj.descAsc == EDescAsc.asc)
@@ -48,18 +49,23 @@ namespace _4_2
             return
                 $"{obj.expression.ToFormattedString()} {descAscStr }";
         }
-        public string Visit(Binary obj)
+        public string VisitBinary(Binary obj)
         {
             return
-                $"{Accept(obj.left)}{obj.operation}{Accept(obj.right)}";
+                $"{Accept(obj.right)}{obj.operation}{Accept(obj.left)}";
         }
-        public string Visit(Number number)
+        public string VisitNumber(Number number)
         {
             return number.number;
         }
-        public string Visit(Identifier identifier)
+        public string VisitIdentifier(Identifier identifier)
         {
             return identifier.Name;
+        }
+
+        public string VisitParentheses(Parentheses parentheses)
+        {
+            return $"({Accept(parentheses.child)})";
         }
     }
 }

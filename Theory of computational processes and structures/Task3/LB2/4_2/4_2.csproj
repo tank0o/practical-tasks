@@ -63,7 +63,7 @@
     <Content Include="Files\answer.txt" />
     <Content Include="Files\Входная строка.txt" />
     <Content Include="Files\Вывод.txt" />
-    <Content Include="Files\Грамматика.txt" />
+    <Content Include="Грамматика.txt" />
     <Content Include="Files\Классическая грамматика.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -26,15 +26,8 @@ namespace _4_2
             this.orderByColumns = orderByColumns;
         }
 
-        public string Accept(INodeVisitor<string> v)
-        {
-            return v.Visit(this);
-        }
-        public void Accept(INodeVisitor v)
-        {
-            v.Visit(this);
-        }
-
+        public string Accept(INodeVisitor<string> v) => v.VisitSelectStmt(this);
+        public void Accept(INodeVisitor v) => v.VisitSelectStmt(this);
         public string ToFormattedString()
         {
             string columnsString = columns[0];
@@ -94,7 +87,7 @@ namespace _4_2
         NULL
     }
 
-    public class DescAsc : INode
+    sealed public class DescAsc : INode
     {
         public readonly IExpression expression;
         public readonly EDescAsc descAsc;
@@ -105,14 +98,9 @@ namespace _4_2
             this.descAsc = descAsc;
         }
 
-        public string Accept(INodeVisitor<string> v)
-        {
-            return v.Visit(this);
-        }
-        public void Accept(INodeVisitor v)
-        {
-            v.Visit(this);
-        }
+        public string Accept(INodeVisitor<string> v) => v.VisitDescAsc(this);
+
+        public void Accept(INodeVisitor v) => v.VisitDescAsc(this);
 
         public string ToFormattedString()
         {
@@ -157,14 +145,8 @@ namespace _4_2
             this.right = right;
         }
 
-        public string Accept(INodeVisitor<string> v)
-        {
-            return v.Visit(this);
-        }
-        public void Accept(INodeVisitor v)
-        {
-            v.Visit(this);
-        }
+        public string Accept(INodeVisitor<string> v) => v.VisitBinary(this);
+        public void Accept(INodeVisitor v) => v.VisitBinary(this);
 
         public string ToFormattedString()
         {
@@ -194,19 +176,9 @@ namespace _4_2
             this.number = number;
         }
 
-        public string Accept(INodeVisitor<string> v)
-        {
-            return v.Visit(this);
-        }
-        public void Accept(INodeVisitor v)
-        {
-            v.Visit(this);
-        }
-
-        public string ToFormattedString()
-        {
-            return number;
-        }
+        public string Accept(INodeVisitor<string> v) => v.VisitNumber(this);
+        public void Accept(INodeVisitor v) => v.VisitNumber(this);
+        public string ToFormattedString() => number;
         public void DebugPrint(TextWriter o, int depth)
         {
             o.WriteIndent(depth);
@@ -221,14 +193,9 @@ namespace _4_2
             this.Name = Name;
         }
 
-        public string Accept(INodeVisitor<string> v)
-        {
-            return v.Visit(this);
-        }
-        public void Accept(INodeVisitor v)
-        {
-            v.Visit(this);
-        }
+        public string Accept(INodeVisitor<string> v) => v.VisitIdentifier(this);
+
+        public void Accept(INodeVisitor v) => v.VisitIdentifier(this);
 
         public string ToFormattedString()
         {
@@ -239,6 +206,29 @@ namespace _4_2
             o.WriteIndent(depth);
             o.Write($"new Identifier(\"{Name}\")");
         }
+    }
+    public class Parentheses : IExpression
+    {
+        public readonly IExpression child;
+        public Parentheses(IExpression child)
+        {
+            this.child = child;
+        }
+        public string ToFormattedString()
+        {
+            return $"({child.ToFormattedString()})";
+        }
+        public void DebugPrint(TextWriter o, int depth)
+        {
+            o.WriteIndent(depth);
+            o.Write("new Parentheses(\n");
+            child.DebugPrint(o, depth + 1);
+            o.Write("\n");
+            o.WriteIndent(depth);
+            o.Write(")");
+        }
+        public string Accept(INodeVisitor<string> v) => v.VisitParentheses(this);
+        public void Accept(INodeVisitor v) => v.VisitParentheses(this);
     }
 
     static class NodeExtensions

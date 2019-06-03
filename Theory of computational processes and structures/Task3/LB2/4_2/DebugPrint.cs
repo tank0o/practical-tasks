@@ -9,11 +9,12 @@ namespace _4_2
 {
     public interface INodeVisitor
     {
-        void Visit(SelectStmt obj);
-        void Visit(DescAsc obj);
-        void Visit(Binary obj);
-        void Visit(Number number);
-        void Visit(Identifier identifier);
+        void VisitSelectStmt(SelectStmt obj);
+        void VisitDescAsc(DescAsc obj);
+        void VisitBinary(Binary obj);
+        void VisitNumber(Number number);
+        void VisitIdentifier(Identifier identifier);
+        void VisitParentheses(Parentheses parentheses);
     }
     public interface IAcceptFormatted
     {
@@ -45,11 +46,10 @@ namespace _4_2
         {
             node.Accept(this);
         }
-        public void Visit(SelectStmt obj)
+        public void VisitSelectStmt(SelectStmt obj)
         {
-            o.WriteIndent(depth);
             o.Write("new SelectStmt(\n");
-            o.WriteIndent(depth + 1);
+            depth++;
             o.Write("new string[] {\n");
             for (int i = 0; i < obj.columns.Count; i++)
             {
@@ -57,16 +57,17 @@ namespace _4_2
                 {
                     o.Write(",\n");
                 }
-                o.WriteIndent(depth + 2);
+                depth++;
                 o.Write("\"" + obj.columns[i] + "\"");
+                depth--;
             }
             o.Write("\n");
-            o.WriteIndent(depth + 1);
+            depth++;
             o.Write("},\n");
-            o.WriteIndent(depth + 1);
             o.Write("\"" + obj.fromTable + "\"");
+            depth--;
             o.Write(",\n");
-            o.WriteIndent(depth + 1);
+            depth++;
             o.Write("new DescAsc[] {\n");
             for (int i = 0; i < obj.orderByColumns.Count; i++)
             {
@@ -74,15 +75,18 @@ namespace _4_2
                 {
                     o.Write(",\n");
                 }
-                obj.orderByColumns[i].DebugPrint(o, depth + 2);
+                depth++;
+                obj.orderByColumns[i].Accept(this);
+                depth--;
             }
             o.Write("\n");
-            o.WriteIndent(depth + 1);
+            o.WriteIndent(depth);
             o.Write("}\n");
+            depth--;
             o.WriteIndent(depth);
             o.Write(")");
         }
-        public void Visit(DescAsc obj)
+        public void VisitDescAsc(DescAsc obj)
         {
             string descAscStr = "";
             if (obj.descAsc == EDescAsc.asc)
@@ -94,7 +98,9 @@ namespace _4_2
 
             o.WriteIndent(depth);
             o.Write("new DescAsc(\n");
-            obj.expression.DebugPrint(o, depth + 1);
+            depth++;
+            obj.expression.Accept(this);
+            depth--;
             o.Write(",\n");
             o.WriteIndent(depth + 1);
             o.Write(descAscStr);
@@ -102,28 +108,40 @@ namespace _4_2
             o.WriteIndent(depth);
             o.Write(")");
         }
-        public void Visit(Binary obj)
+        public void VisitBinary(Binary obj)
         {
             o.WriteIndent(depth);
             o.Write("new Binary(\n");
+            depth++;
             Accept(obj.right);
             o.Write(",\n");
-            o.WriteIndent(depth + 1);
+            o.WriteIndent(depth);
             o.Write($"\"{obj.operation}\",\n");
             Accept(obj.left);
+            depth--;
             o.Write("\n");
             o.WriteIndent(depth);
             o.Write(")");
         }
-        public void Visit(Number number)
+        public void VisitNumber(Number number)
         {
             o.WriteIndent(depth);
             o.Write($"new Number(\"{number.number}\")");
         }
-        public void Visit(Identifier identifier)
+        public void VisitIdentifier(Identifier identifier)
         {
             o.WriteIndent(depth);
             o.Write($"new Identifier(\"{identifier.Name}\")");
+        }
+
+        public void VisitParentheses(Parentheses parentheses)
+        {
+            o.WriteIndent(depth);
+            o.Write("new Parentheses(\n");
+            Accept(parentheses.child);
+            o.Write("\n");
+            o.WriteIndent(depth);
+            o.Write(")");
         }
     }
 }
