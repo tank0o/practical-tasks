@@ -1,0 +1,48 @@
+*Program:
+	Statement*
+Statement:
+	ExpressionStatement
+	Assignment
+	If
+	While
+	Var
+ExpressionStatement:
+	Expression ';'
+Var:
+	'var' Assignment
+Assignment:
+	Identifier '=' Expression ';'
+If:	
+	'if' '(' Expression ')' Block
+While:
+	'while' '(' Expression ')' Block
+Block:
+	'{' Statement* '}'
+Expession:
+	Equality
+Equality:
+	Equality "==" Relational
+	Relational
+Relational:
+	Relational "<" Additive
+	Additive
+Additive:
+	Additive ("+"|"-") Multiplicative
+	Multiplicative
+Multiplicative:
+	Multiplicative ("*"|"/"|"%") Primary
+	Primary
+Primary:
+	Call
+	MemberAccess
+	Primitive
+Call:
+	Primary '(' Arguments? ')'
+Arguments:
+	(Expression ',')* Expression
+MemberAccess:
+	Primary '.' Identifier
+Primitive:
+	'(' Expression ')'
+	Number
+	Identifier

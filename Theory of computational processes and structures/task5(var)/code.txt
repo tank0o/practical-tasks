@@ -1,0 +1,61 @@
+if(true){
+var a=1;
+var a=1;
+}
+var t=654;
+
+dump();
+dump(7+3, 7-3, 7*3, 7/3, 7%3);
+dump(null==null, null<null);
+dump(false==null, false==false, false<false);
+dump(true==null, true==false, true<false, true==true, true<true);
+dump(0==null, 0==false, 0==true, 0==0, 0<0);
+dump(10==null, 10==false, 10==true, 10==0, 10<0, 10==10, 10<10);
+dump(dump==null, dump==false, dump==true, dump==0, dump==true, dump==dump);
+dump(trace==null, trace==false, trace==true, trace==0, trace==10, trace==dump, trace==trace);
+dump(true == 2 < 3);
+
+dump()(1)(2, 3)(dump)(trace);
+dump(trace(13));
+((trace))((dump))(1);
+
+dump(x, y, z);
+var p = 10;
+dump(p);
+var dd = dump;
+dd(p+1);
+
+var x = 5;
+while (x < 6) {
+	dump(1);
+	x = x + 1;
+}
+while (0 < x) {
+	dump(x);
+	x = x - 1;
+	p = 6;
+	if (true) {
+		dump(true);
+	}
+}
+
+var i = 0;
+var s = 0;
+while (i < 100000){
+	s = s + i*i;
+	i = i + 1;
+}
+dump(s);
+/*
+*/
+
+var a = 1; // создает переменную "a"
+var b = 2; 
+a = 2; // присваивает 2 в переменную "a", если бы выше она не была объявлена, была бы ошибка
+if (true){
+	var a = 3; // создает другую переменную "a", в C# так нельзя, в этом отличие
+	b = true; // у переменной нет типа
+	var c = 4;
+	// переменные "a" и "c" удаляются после выхода из блока
+} 
+dump(a, b); // 2 true

@@ -14,18 +14,21 @@ namespace _4_2
     }
     public interface IExpression : INode { }
 
-    public class SelectStmt : INode
+    public class SelectStmt2 : INode
     {
         public IReadOnlyList<string> columns;
         public readonly string fromTable;
         public IReadOnlyList<DescAsc> orderByColumns;
-        public SelectStmt(IReadOnlyList<string> columns, string fromTable, IReadOnlyList<DescAsc> orderByColumns)
+        public SelectStmt2(IReadOnlyList<string> columns, string fromTable, IReadOnlyList<DescAsc> orderByColumns)
         {
             this.columns = columns;
             this.fromTable = fromTable;
             this.orderByColumns = orderByColumns;
         }
-
+        public static string ToString()
+        {
+            return typeof(SelectStmt2).Name;
+        }
         public string Accept(INodeVisitor<string> v) => v.VisitSelectStmt(this);
         public void Accept(INodeVisitor v) => v.VisitSelectStmt(this);
         public string ToFormattedString()
@@ -92,6 +95,11 @@ namespace _4_2
         public readonly IExpression expression;
         public readonly EDescAsc descAsc;
 
+        public static string ToString()
+        {
+            return typeof(DescAsc).Name;
+        }
+
         public DescAsc(IExpression expression, EDescAsc descAsc)
         {
             this.expression = expression;
@@ -144,7 +152,10 @@ namespace _4_2
             this.operation = operation;
             this.right = right;
         }
-
+        public static string ToString()
+        {
+            return typeof(Binary).Name;
+        }
         public string Accept(INodeVisitor<string> v) => v.VisitBinary(this);
         public void Accept(INodeVisitor v) => v.VisitBinary(this);
 
@@ -155,6 +166,7 @@ namespace _4_2
         }
         public void DebugPrint(TextWriter o, int depth)
         {
+           // nameof(TextWriter)
             o.WriteIndent(depth);
             o.Write("new Binary(\n");
             left.DebugPrint(o, depth + 1);
@@ -176,6 +188,10 @@ namespace _4_2
             this.number = number;
         }
 
+        public static string ToString()
+        {
+            return typeof(Number).Name;
+        }
         public string Accept(INodeVisitor<string> v) => v.VisitNumber(this);
         public void Accept(INodeVisitor v) => v.VisitNumber(this);
         public string ToFormattedString() => number;
@@ -193,6 +209,10 @@ namespace _4_2
             this.Name = Name;
         }
 
+        public static string ToString()
+        {
+            return typeof(Identifier).Name;
+        }
         public string Accept(INodeVisitor<string> v) => v.VisitIdentifier(this);
 
         public void Accept(INodeVisitor v) => v.VisitIdentifier(this);
@@ -214,6 +234,12 @@ namespace _4_2
         {
             this.child = child;
         }
+
+        public static string ToString()
+        {
+            return typeof(Parentheses).Name;
+        }
+
         public string ToFormattedString()
         {
             return $"({child.ToFormattedString()})";
@@ -247,8 +273,8 @@ namespace _4_2
     {
         static void Main()
         {
-            string s = "SELECT ab, dfg FROM bla ORDER BY ab, dfg + 2 * 6 desc, df asc";
-            s = "SELECT ab, dfg FROM bla ORDER BY 1+2+3 asc";
+            string s = "SELECT ab, dfg FROM bla ORDER BY ab , dfg+2*6 desc, df asc";
+            //s = "SELECT ab, dfg FROM bla ORDER BY 1+2+3 asc";
             //var tree = new SelectStmt(
             //    new string[]
             //    {
@@ -272,10 +298,14 @@ namespace _4_2
             //Console.WriteLine(tree.ToDebugString());
 
             var tree = new Parser(s).SelectStmt();
+            //tree = 
             ToFormattedString interpreter = new ToFormattedString();
-            Console.WriteLine(tree.Accept(interpreter));
+            
             DebugPrint debugPrint = new DebugPrint(tree);
             Console.WriteLine(debugPrint.result);
+
+            Console.WriteLine(tree.Accept(interpreter) == s);
+
         }
     }
 }

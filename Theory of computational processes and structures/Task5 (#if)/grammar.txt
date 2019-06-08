@@ -1,0 +1,59 @@
+*Program:
+	Statement*
+Statement:
+	ExpressionStatement
+	Assignment
+	If
+	PreIf
+	While
+ExpressionStatement:
+	Expression ';'
+Assignment:
+	Identifier '=' Expression ';'
+If:
+	'if' '(' Expression ')' Block
+PreIf:
+	'#if' Expression Block PreElseIfSet PreElse #endif
+	'#if' Expression Block PreElse #endif
+	'#if' Expression Block PreElseIfSet #endif
+	'#if' Expression Block #endif
+PreElseIfSet:
+	PreElseIfSet PreElseIf
+	PreElseIf
+PreElseIf:
+	'#elseif' Expression Block
+PreElse: 
+	'#else' Block
+	
+While:
+	'while' '(' Expression ')' Block
+Block:
+	'{' Statement* '}'
+Expession:
+	Equality
+Equality:
+	Equality "==" Relational
+	Relational
+Relational:
+	Relational "<" Additive
+	Additive
+Additive:
+	Additive ("+"|"-") Multiplicative
+	Multiplicative
+Multiplicative:
+	Multiplicative ("*"|"/"|"%") Primary
+	Primary
+Primary:
+	Call
+	MemberAccess
+	Primitive
+Call:
+	Primary '(' Arguments? ')'
+Arguments:
+	(Expression ',')* Expression
+MemberAccess:
+	Primary '.' Identifier
+Primitive:
+	'(' Expression ')'
+	Number
+	Identifier

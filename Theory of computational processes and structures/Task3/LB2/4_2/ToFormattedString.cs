@@ -8,7 +8,7 @@ namespace _4_2
 {
     public interface INodeVisitor<T>
     {
-        T VisitSelectStmt(SelectStmt obj);
+        T VisitSelectStmt(SelectStmt2 obj);
         T VisitDescAsc(DescAsc obj);
         T VisitBinary(Binary obj);
         T VisitNumber(Number number);
@@ -26,7 +26,7 @@ namespace _4_2
         {
             return node.Accept(this);
         }
-        public string VisitSelectStmt(SelectStmt obj)
+        public string VisitSelectStmt(SelectStmt2 obj)
         {
             string columnsString = obj.columns[0];
             for (int i = 1; i < obj.columns.Count; i++)

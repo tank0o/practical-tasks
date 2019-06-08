@@ -68,7 +68,7 @@ namespace _4_2
             return tree;
         }
 
-        SelectStmt ParseSelectStmt()
+        SelectStmt2 ParseSelectStmt()
         {
             if (!SkipIf("SELECT"))
                 throw new Exception("Ожидалось 'SELECT'");
@@ -94,7 +94,7 @@ namespace _4_2
             {
                 orderByColumns.Add(DescAscsParse());
             }
-            return new SelectStmt(columns, fromTable, orderByColumns);
+            return new SelectStmt2(columns, fromTable, orderByColumns);
         }
 
         DescAsc DescAscsParse()

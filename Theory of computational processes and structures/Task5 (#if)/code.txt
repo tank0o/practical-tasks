@@ -1,0 +1,75 @@
+dump();
+dump(7+3, 7-3, 7*3, 7/3, 7%3);
+dump(null==null, null<null);
+dump(false==null, false==false, false<false);
+dump(true==null, true==false, true<false, true==true, true<true);
+dump(0==null, 0==false, 0==true, 0==0, 0<0);
+dump(10==null, 10==false, 10==true, 10==0, 10<0, 10==10, 10<10);
+dump(dump==null, dump==false, dump==true, dump==0, dump==true, dump==dump);
+dump(trace==null, trace==false, trace==true, trace==0, trace==10, trace==dump, trace==trace);
+dump(true == 2 < 3);
+
+dump()(1)(2, 3)(dump)(trace);
+dump(trace(13));
+((trace))((dump))(1);
+
+dump(x, y, z);
+p = 10;
+dump(p);
+dd = dump;
+dd(p+1);
+
+x = 5;
+while (x < 6) {
+	dump(1);
+	x = x + 1;
+}
+while (0 < x) {
+	dump(x);
+	x = x - 1;
+	p = 6;
+	if (true) {
+		dump(true);
+	}
+}
+
+i = 0;
+s = 0;
+while (i < 100000){
+	s = s + i*i;
+	i = i + 1;
+}
+#define D
+#define B
+#define C
+
+#undef A
+#undef C
+
+#if D
+dump(1);
+#elseif C
+dump(2);
+#elseif B
+dump(3);
+#endif
+
+#if A
+dump(4);
+#elseif D
+dump(5);
+#endif
+
+#if A
+dump(6);
+#elseif C
+dump(7);
+#else
+dump(8);
+#endif
+
+#if D
+dump(1);
+#endif
+/*
+*/
