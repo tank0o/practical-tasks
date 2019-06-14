@@ -9,11 +9,11 @@ namespace Lab5.Ast.Statements
     class ArrayIndex : IExpression
     {
         public readonly string variable;
-        public readonly int right;
+        public readonly IExpression right;
         public readonly bool range;
-        public readonly int left;
+        public readonly IExpression left;
 
-        public ArrayIndex(string variable, int right, bool range, int left)
+        public ArrayIndex(string variable, IExpression right, bool range, IExpression left)
         {
             this.variable = variable;
             this.right = right;

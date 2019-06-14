@@ -9,6 +9,7 @@ namespace Lab5.Ast {
 		void VisitIdentifier(Identifier identifier);
 		void VisitMemberAccess(MemberAccess memberAccess);
         void VisitArrayIndex(ArrayIndex arrayIndex);
+        void VisitArrayExpr(ArrayExpr arrayExpr);
 
     }
 	interface IExpressionVisitor<T> {
@@ -19,6 +20,7 @@ namespace Lab5.Ast {
 		T VisitIdentifier(Identifier identifier);
 		T VisitMemberAccess(MemberAccess memberAccess);
         T VisitArrayIndex(ArrayIndex arrayIndex);
+        T VisitArrayExpr(ArrayExpr arrayExpr);
 
     }
 }

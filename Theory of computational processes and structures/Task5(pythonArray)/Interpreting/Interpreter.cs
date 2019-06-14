@@ -168,9 +168,18 @@ namespace Lab5.Interpreting {
 			var args = call.Arguments.Select(Calc).ToArray();
 			return function.Call(args);
 		}
+        public object VisitArrayExpr(ArrayExpr arrayExpr)
+        {
+            object[] newObject = new object[arrayExpr.Expr.Count];
+            for (int i = 0; i < newObject.Length; i++)
+            {
+                newObject[i] = Calc(arrayExpr.Expr[i]);
+            }
+           return newObject;
+        }
 		public object VisitNumber(Number number) {
 			int value;
-			if (int.TryParse(number.Lexeme, NumberStyles.None, NumberFormatInfo.InvariantInfo, out value)) {
+			if (int.TryParse(number.Lexeme, NumberStyles.Number, NumberFormatInfo.InvariantInfo, out value)) {
 				return value;
 			}
 			throw MakeError(number, $"Не удалось преобразовать {number.Lexeme} в int");
@@ -196,8 +205,8 @@ namespace Lab5.Interpreting {
         public object VisitArrayIndex(ArrayIndex arrayIndex)
         {
             object[] obj = (object[])variables[arrayIndex.variable];
-            int left = arrayIndex.left;
-            int right = arrayIndex.right;
+            int left = (int)Calc(arrayIndex.left);
+            int right = (int)Calc(arrayIndex.right);
             if (left < 0)
             {
                 left = obj.Length + left;

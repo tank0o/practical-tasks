@@ -10,10 +10,7 @@ ExpressionStatement:
 	Expression ';'
 Assignment:
 	Identifier '=' Expression ';'
-AssignmentMas:
-	Identifier '=' '[' Arrays ']' ';'
-Arrays:
-	Arrays ',' Expression
+
 
 If:
 	'if' '(' Expression ')' Block
@@ -21,7 +18,7 @@ While:
 	'while' '(' Expression ')' Block
 Block:
 	'{' Statement* '}'
-Expession:
+Expression:
 	Equality
 Equality:
 	Equality "==" Relational
@@ -45,6 +42,10 @@ ArrayIndex:
 	Identifier '[' ':' Expession '];'
 	Identifier '[' Expession ':' '];'
 	Identifier '[' Expession ':' Expession '];'
+ArraysExpr:
+	'[' Arrays ']'
+Arrays:
+	Arrays ',' Expression
 Call:
 	Primary '(' Arguments? ')'
 Arguments:
@@ -55,3 +56,4 @@ Primitive:
 	'(' Expression ')'
 	Number
 	Identifier
+	ArraysExpr
