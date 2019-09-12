@@ -53,12 +53,22 @@ namespace Lab5.Interpreting {
 		public void VisitExpressionStatement(ExpressionStatement expressionStatement) {
 			Calc(expressionStatement.Expr);
 		}
-		public void VisitAssignment(Assignment assignment) {
-			variables[assignment.Variable] = Calc(assignment.Expr);
-		}
-		#endregion
-		#region expressions
-		object Calc(IExpression expression) {
+        public void VisitAssignment(Assignment assignment)
+        {
+            variables[assignment.Variable] = Calc(assignment.Expr);
+        }
+        public void VisitAssignmentMas(AssignmentMas assignmentMas)
+        {
+            object[] newObject = new object[assignmentMas.Expr.Length];
+            for (int i = 0; i < newObject.Length; i++)
+            {
+                newObject[i] = Calc(assignmentMas.Expr[i]);
+            }
+            variables[assignmentMas.Variable] = newObject;
+        }
+        #endregion
+        #region expressions
+        object Calc(IExpression expression) {
 			return expression.Accept(this);
 		}
 		T Calc<T>(IExpression expression) {
@@ -158,26 +168,74 @@ namespace Lab5.Interpreting {
 			var args = call.Arguments.Select(Calc).ToArray();
 			return function.Call(args);
 		}
+        public object VisitArrayExpr(ArrayExpr arrayExpr)
+        {
+            object[] newObject = new object[arrayExpr.Expr.Count];
+            for (int i = 0; i < newObject.Length; i++)
+            {
+                newObject[i] = Calc(arrayExpr.Expr[i]);
+            }
+           return newObject;
+        }
 		public object VisitNumber(Number number) {
 			int value;
-			if (int.TryParse(number.Lexeme, NumberStyles.None, NumberFormatInfo.InvariantInfo, out value)) {
+			if (int.TryParse(number.Lexeme, NumberStyles.Number, NumberFormatInfo.InvariantInfo, out value)) {
 				return value;
 			}
 			throw MakeError(number, $"Не удалось преобразовать {number.Lexeme} в int");
 		}
-		public object VisitIdentifier(Identifier identifier) {
-			object value;
-			if (variables.TryGetValue(identifier.Name, out value)) {
-				return value;
-			}
-			throw MakeError(identifier, $"Неизвестная переменная {identifier.Name}");
-		}
-		public object VisitMemberAccess(MemberAccess memberAccess) {
+        public object VisitIdentifier(Identifier identifier)
+        {
+            object value;
+            if (variables.TryGetValue(identifier.Name, out value))
+            {
+                return value;
+            }
+            throw MakeError(identifier, $"Неизвестная переменная {identifier.Name}");
+        }
+
+        public object VisitMemberAccess(MemberAccess memberAccess) {
 			throw new NotSupportedException();
 		}
 		#endregion
 		Exception MakeError(IExpression expression, string message) {
 			return new Exception(LexerUtils.MakeErrorMessage(source, expression.Position, message));
 		}
-	}
+
+        public object VisitArrayIndex(ArrayIndex arrayIndex)
+        {
+            object[] obj = (object[])variables[arrayIndex.variable];
+            int left = (int)Calc(arrayIndex.left);
+            int right = (int)Calc(arrayIndex.right);
+            if (left < 0)
+            {
+                left = obj.Length + left;
+            }
+            if (right < 0)
+            {
+                right = obj.Length + right;
+            }
+            if (left > right)
+            {
+                int t = left;
+                left = right;
+                right = t;
+            }
+            int[] myInt;
+
+            if (arrayIndex.range)
+            {
+                myInt = new int[right-left+1];
+                for (int i =0; i < myInt.Length; i++)
+                {
+                    myInt[i] = ((int)(obj)[i+left]);
+                }
+            }
+            else
+            {
+                myInt = new int[] { (int)(obj)[left] };
+            }
+            return myInt;
+        }
+    }
 }

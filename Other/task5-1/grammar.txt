@@ -3,6 +3,7 @@
 Statement:
 	ExpressionStatement
 	Assignment
+	AssignmentMas
 	If
 	While
 ExpressionStatement:
@@ -15,7 +16,7 @@ While:
 	'while' '(' Expression ')' Block
 Block:
 	'{' Statement* '}'
-Expession:
+Expression:
 	Equality
 Equality:
 	Equality "==" Relational
@@ -33,6 +34,17 @@ Primary:
 	Call
 	MemberAccess
 	Primitive
+	ArrayIndex
+ArrayIndex:
+	Identifier '[];'
+	Identifier '[' Expession '];'
+	Identifier '[' ':' Expession '];'
+	Identifier '[' Expession ':' '];'
+	Identifier '[' Expession ':' Expession '];'
+ArraysExpr:
+	'[' Arrays ']'
+Arrays:
+	Arrays ',' Expression
 Call:
 	Primary '(' Arguments? ')'
 Arguments:
@@ -43,3 +55,4 @@ Primitive:
 	'(' Expression ')'
 	Number
 	Identifier
+	ArraysExpr
