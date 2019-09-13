@@ -61,7 +61,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Ast\Expressions\ArrayExpr.cs" />
+    <Compile Include="Ast\Expressions\ArrayIndex.cs" />
+    <Compile Include="Ast\Statements\AssigmentMas.cs" />
     <Compile Include="Interpreting\Interpreter.cs" />
+    <Compile Include="Interpreting\Values\Functions\LenFunction.cs" />
     <Compile Include="Interpreting\Values\Functions\TraceFunction.cs" />
     <Compile Include="Interpreting\Values\Functions\DumpFunction.cs" />
     <Compile Include="Interpreting\Values\IDumpable.cs" />

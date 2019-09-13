@@ -4,13 +4,16 @@ using Lab5.Ast.Statements;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-namespace Lab5.Parsing {
-	sealed class Parser {
+namespace Lab5.Parsing
+{
+	sealed class Parser
+	{
 		readonly IReadOnlyList<Token> tokens;
 		readonly string source;
 		int position = 0;
 		Token CurrentToken => tokens[position];
-		Parser(IReadOnlyList<Token> tokens, string source) {
+		Parser(IReadOnlyList<Token> tokens, string source)
+		{
 			this.tokens = tokens;
 			this.source = source;
 		}
@@ -26,8 +29,10 @@ namespace Lab5.Parsing {
 			pointer: " <|> "
 			).ToArray());
 #endif
-		static bool IsNotWhitespace(Token t) {
-			switch (t.Type) {
+		static bool IsNotWhitespace(Token t)
+		{
+			switch (t.Type)
+			{
 				case TokenType.Whitespaces:
 				case TokenType.SingleLineComment:
 				case TokenType.MultiLineComment:
@@ -35,22 +40,29 @@ namespace Lab5.Parsing {
 			}
 			return true;
 		}
-		void ExpectEof() {
-			if (!IsType(TokenType.EnfOfFile)) {
+		void ExpectEof()
+		{
+			if (!IsType(TokenType.EnfOfFile))
+			{
 				throw MakeError($"Не допарсили до конца, остался {CurrentToken}");
 			}
 		}
-		void ReadNextToken() {
+		void ReadNextToken()
+		{
 			position += 1;
 		}
-		void Reset() {
+		void Reset()
+		{
 			position = 0;
 		}
-		Exception MakeError(string message) {
+		Exception MakeError(string message)
+		{
 			return new Exception(LexerUtils.MakeErrorMessage(source, CurrentToken.Position, message));
 		}
-		bool SkipIf(string s) {
-			if (CurrentIs(s)) {
+		bool SkipIf(string s)
+		{
+			if (CurrentIs(s))
+			{
 				ReadNextToken();
 				return true;
 			}
@@ -58,45 +70,56 @@ namespace Lab5.Parsing {
 		}
 		bool CurrentIs(string s) => string.Equals(CurrentToken.Lexeme, s, StringComparison.Ordinal);
 		bool IsType(TokenType type) => CurrentToken.Type == type;
-		void Expect(string s) {
-			if (!SkipIf(s)) {
+		void Expect(string s)
+		{
+			if (!SkipIf(s))
+			{
 				throw MakeError($"Ожидали \"{s}\", получили {CurrentToken}");
 			}
 		}
 		#endregion
-		public static ProgramNode Parse(string source) {
+		public static ProgramNode Parse(string source)
+		{
 			var eof = new Token(TokenType.EnfOfFile, "", source.Length);
 			var tokens = Lexer.GetTokens(source).Concat(new[] { eof }).Where(IsNotWhitespace).ToList();
 			var parser = new Parser(tokens, source);
 			return parser.ParseProgram();
 		}
-		ProgramNode ParseProgram() {
+		ProgramNode ParseProgram()
+		{
 			Reset();
 			var statements = new List<IStatement>();
-			while (!IsType(TokenType.EnfOfFile)) {
+			while (!IsType(TokenType.EnfOfFile))
+			{
 				statements.Add(ParseStatement());
 			}
 			var result = new ProgramNode(statements);
 			ExpectEof();
 			return result;
 		}
-		Block ParseBlock() {
+		Block ParseBlock()
+		{
 			Expect("{");
 			var statements = new List<IStatement>();
-			while (!SkipIf("}")) {
+			while (!SkipIf("}"))
+			{
 				statements.Add(ParseStatement());
 			}
 			return new Block(statements);
 		}
-		IStatement ParseStatement() {
-			if (SkipIf("if")) {
+		IStatement ParseStatement()
+		{
+
+			if (SkipIf("if"))
+			{
 				Expect("(");
 				var condition = ParseExpression();
 				Expect(")");
 				var block = ParseBlock();
 				return new IfStatement(condition, block);
 			}
-			if (SkipIf("while")) {
+			if (SkipIf("while"))
+			{
 				Expect("(");
 				var condition = ParseExpression();
 				Expect(")");
@@ -104,22 +127,28 @@ namespace Lab5.Parsing {
 				return new WhileStatement(condition, block);
 			}
 			var expression = ParseExpression();
-			if (SkipIf("=")) {
+
+			if (SkipIf("="))
+			{
 				var identifier = expression as Identifier;
-				if (identifier == null) {
+				if (identifier == null)
+				{
 					throw MakeError("Присваивание не в переменную");
 				}
 				var restAssigmentExpression = ParseExpression();
 				Expect(";");
 				return new Assignment(identifier.Name, restAssigmentExpression);
 			}
-			else {
+			else
+			{
 				Expect(";");
 				return new ExpressionStatement(expression);
 			}
 		}
-		string ParseIdentifier() {
-			if (!IsType(TokenType.Identifier)) {
+		string ParseIdentifier()
+		{
+			if (!IsType(TokenType.Identifier))
+			{
 				throw MakeError($"Ожидали идентификатор, получили {CurrentToken}");
 			}
 			var lexeme = CurrentToken.Lexeme;
@@ -127,115 +156,201 @@ namespace Lab5.Parsing {
 			return lexeme;
 		}
 		#region expressions
-		IExpression ParseExpression() {
+		IExpression ParseExpression()
+		{
 			return ParseEqualityExpression();
 		}
-		IExpression ParseEqualityExpression() {
+
+		IExpression ParseEqualityExpression()
+		{
 			var left = ParseRelationalExpression();
-			while (true) {
+			while (true)
+			{
 				var pos = CurrentToken.Position;
-				if (SkipIf("==")) {
+				if (SkipIf("=="))
+				{
 					var right = ParseRelationalExpression();
 					left = new Binary(pos, left, BinaryOperator.Equal, right);
 				}
-				else {
+				else
+				{
 					break;
 				}
 			}
 			return left;
 		}
-		IExpression ParseRelationalExpression() {
+		IExpression ParseRelationalExpression()
+		{
 			var left = ParseAdditiveExpression();
-			while (true) {
+			while (true)
+			{
 				var pos = CurrentToken.Position;
-				if (SkipIf("<")) {
+				if (SkipIf("<"))
+				{
 					var right = ParseAdditiveExpression();
 					left = new Binary(pos, left, BinaryOperator.Less, right);
 				}
-				else {
+				else
+				{
 					break;
 				}
 			}
 			return left;
 		}
-		IExpression ParseAdditiveExpression() {
+		IExpression ParseAdditiveExpression()
+		{
 			var left = ParseMultiplicativeExpression();
-			while (true) {
+			while (true)
+			{
 				var pos = CurrentToken.Position;
-				if (SkipIf("+")) {
+				if (SkipIf("+"))
+				{
 					var right = ParseMultiplicativeExpression();
 					left = new Binary(pos, left, BinaryOperator.Addition, right);
 				}
-				else if (SkipIf("-")) {
+				else if (SkipIf("-"))
+				{
 					var right = ParseMultiplicativeExpression();
 					left = new Binary(pos, left, BinaryOperator.Subtraction, right);
 				}
-				else {
+				else
+				{
 					break;
 				}
 			}
 			return left;
 		}
-		IExpression ParseMultiplicativeExpression() {
+		IExpression ParseMultiplicativeExpression()
+		{
 			var left = ParsePrimary();
-			while (true) {
+			while (true)
+			{
 				var pos = CurrentToken.Position;
-				if (SkipIf("*")) {
+				if (SkipIf("*"))
+				{
 					var right = ParsePrimary();
 					left = new Binary(pos, left, BinaryOperator.Multiplication, right);
 				}
-				else if (SkipIf("/")) {
+				else if (SkipIf("/"))
+				{
 					var right = ParsePrimary();
 					left = new Binary(pos, left, BinaryOperator.Division, right);
 				}
-				else if (SkipIf("%")) {
+				else if (SkipIf("%"))
+				{
 					var right = ParsePrimary();
 					left = new Binary(pos, left, BinaryOperator.Remainder, right);
 				}
-				else {
+				else
+				{
 					break;
 				}
 			}
 			return left;
 		}
-		IExpression ParsePrimary() {
+		IExpression ParsePrimary()
+		{
 			var expression = ParsePrimitive();
-			while (true) {
+			while (true)
+			{
 				int pos = CurrentToken.Position;
-				if (SkipIf("(")) {
+				if (SkipIf("("))
+				{
 					var arguments = new List<IExpression>();
-					if (!CurrentIs(")")) {
+					if (!CurrentIs(")"))
+					{
 						arguments.Add(ParseExpression());
-						while (SkipIf(",")) {
+						while (SkipIf(","))
+						{
 							arguments.Add(ParseExpression());
 						}
 					}
 					Expect(")");
 					expression = new Call(pos, expression, arguments);
 				}
-				else if (SkipIf(".")) {
+				else if (SkipIf("."))
+				{
 					var member = ParseIdentifier();
 					expression = new MemberAccess(pos, expression, member);
 				}
-				else {
+				else if (SkipIf("["))
+				{
+					ArrayIndex parant = null;
+					IExpression expressionleft;
+					IExpression expressionRight;
+
+					var identifierVariable = expression as Identifier;
+					do
+					{
+						expressionleft = new Number(pos, "0");
+						expressionRight = new Number(pos, "0");
+
+						if (SkipIf("]"))
+						{
+							if (parant == null)
+								parant = new ArrayIndex(identifierVariable.Name, null, null);
+							else parant = new ArrayIndex(parant, null, null);
+							continue;
+						}
+						expressionleft = ParseExpression();
+						if (SkipIf(":"))
+						{
+							expressionRight = ParseExpression();
+
+							if (parant == null)
+								parant = new ArrayIndex(identifierVariable.Name, expressionRight, expressionleft);
+							else parant = new ArrayIndex(parant, expressionRight, expressionleft);
+						}
+						else
+						{
+							if (parant == null)
+								parant = new ArrayIndex(identifierVariable.Name, expressionleft, expressionleft);
+							else parant = new ArrayIndex(parant, expressionleft, expressionleft);
+						}
+						Expect("]");
+
+					} while (SkipIf("["));
+					return parant;
+				}
+				else
+				{
 					break;
 				}
 			}
 			return expression;
 		}
-		IExpression ParsePrimitive() {
+		IExpression ParseArrayExpr()
+		{
+			List<IExpression> newObj = new List<IExpression>();
+			do
+			{
+				newObj.Add(ParseExpression());
+			} while (SkipIf(","));
+			Expect("]");
+			return new ArrayExpr(newObj);
+
+		}
+		IExpression ParsePrimitive()
+		{
 			var pos = CurrentToken.Position;
-			if (SkipIf("(")) {
+			if (SkipIf("("))
+			{
 				var expression = new Parentheses(pos, ParseExpression());
 				Expect(")");
 				return expression;
 			}
-			if (IsType(TokenType.NumberLiteral)) {
+			if (SkipIf("["))
+			{
+				return ParseArrayExpr();
+			}
+			if (IsType(TokenType.NumberLiteral))
+			{
 				var lexeme = CurrentToken.Lexeme;
 				ReadNextToken();
 				return new Number(pos, lexeme);
 			}
-			else if (IsType(TokenType.Identifier)) {
+			else if (IsType(TokenType.Identifier))
+			{
 				var lexeme = CurrentToken.Lexeme;
 				ReadNextToken();
 				return new Identifier(pos, lexeme);

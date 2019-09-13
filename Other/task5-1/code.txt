@@ -3,5 +3,6 @@ dump(a[]);
 dump(a[1]);
 dump(a[0:1]);
 dump(a[1:]);
+dump(a[:3]);
 dump(a[2:2]);
 dump(a[-3:-2]);

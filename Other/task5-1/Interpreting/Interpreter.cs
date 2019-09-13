@@ -222,7 +222,6 @@ namespace Lab5.Interpreting {
                 right = t;
             }
             int[] myInt;
-
             if (arrayIndex.range)
             {
                 myInt = new int[right-left+1];
