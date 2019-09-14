@@ -285,15 +285,18 @@ namespace Lab5.Interpreting
 			{
 				object obj;
 				obj = ((object[])VisitArrayIndex(arrayIndex.array))[0];
-				if (obj==null || obj.GetType() != typeof(object[]))
-					return MakeError(arrayIndex, "Не массив");
-				objArray = (object[])(obj);
+				if (obj == null || obj.GetType() != typeof(object[]))
+					objArray = new object[] { obj };
+				else
+					objArray = (object[])(obj);
 			}
 
 			if (arrayIndex.l == null)
 				return objArray;
 			int left = (int)Calc(arrayIndex.l);
 			int right = (int)Calc(arrayIndex.r);
+
+			if (left != right) right--;
 
 			object[] resArray;
 
@@ -302,8 +305,10 @@ namespace Lab5.Interpreting
 			{
 				resArray[i] = ((objArray)[i + left]);
 			}
-
-			return resArray;
+			if (resArray.Length == 1)
+				return resArray[0];
+			else
+				return resArray;
 		}
 	}
 }

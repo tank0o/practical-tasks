@@ -1,7 +1,3 @@
-a = [null,3+2,2,4,5,true,null,[[2,2],2]];
-dump(a[7][1]);
-dump(a[]+[[2,2],3]);
-dump(a[0:1]);
-dump(a[1:1]);
-dump(a[2:2]);
-dump(len(a));
+a = [1,true,[true]];
+dump(a[1],a[2],a[2][0]);
+dump(a[1:3]);
