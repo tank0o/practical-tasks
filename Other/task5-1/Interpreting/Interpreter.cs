@@ -224,8 +224,9 @@ namespace Lab5.Interpreting {
             object[] myInt;
             if (arrayIndex.range)
             {
-                myInt = new object[right-left+1];
-                for (int i =0; i < myInt.Length; i++)
+				myInt = new object[right >= obj.Length ? obj.Length - left : right - left + 1];
+				//myInt = new object[right-left+1];
+				for (int i =0; i < myInt.Length; i++)
                 {
                     myInt[i] = ((obj)[i+left]);
                 }

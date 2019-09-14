@@ -276,7 +276,7 @@ namespace Lab5.Parsing
 				}
 				else if (SkipIf("["))
 				{
-					ArrayIndex parant = null;
+					ArrayIndex arrayI = null;
 					bool l, r;
 					IExpression expressionleft;
 					IExpression expressionRight;
@@ -289,8 +289,7 @@ namespace Lab5.Parsing
 
 					if (SkipIf("]"))
 					{
-						parant = new ArrayIndex(identifierVariable.Name, expressionRight, l | r, expressionleft);
-						continue;
+						arrayI = new ArrayIndex(identifierVariable.Name, expressionRight, l | r, expressionleft);
 					}
 
 					l = SkipIf(":");
@@ -303,8 +302,8 @@ namespace Lab5.Parsing
 								expressionRight = ParseExpression();
 							else
 							{
-								parant = new ArrayIndex(identifierVariable.Name, expressionRight, l | r, expressionleft);
-								continue;
+								arrayI = new ArrayIndex(identifierVariable.Name, expressionRight, l | r, expressionleft);
+								return arrayI;
 							}
 						}
 					}
@@ -314,8 +313,8 @@ namespace Lab5.Parsing
 							expressionRight = ParseExpression();
 					}
 					Expect("]");
-					parant = new ArrayIndex(identifierVariable.Name, expressionRight, l | r, expressionleft);
-					return parant;
+					arrayI = new ArrayIndex(identifierVariable.Name, expressionRight, l | r, expressionleft);
+					return arrayI;
 				}
 				else
 				{
