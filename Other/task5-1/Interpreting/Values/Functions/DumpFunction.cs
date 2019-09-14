@@ -32,15 +32,15 @@ namespace Lab5.Interpreting.Values.Functions
             {
                 return ((IDumpable)value).GetDumpString();
             }
-            if (value is int[])
+            if (value is object[])
             {
-                if (((int[])value).Length == 1)
-                    return ((int[])value)[0].ToString();
-                string text = "[" + ((int[])value)[0].ToString();
+                if (((object[])value).Length == 1)
+                    return ((object[])value)[0].ToString();
+                string text = "[" + ((object[])value)[0].ToString();
 
-                for (int i = 1; i < ((int[])value).Length; i++)
+                for (int i = 1; i < ((object[])value).Length; i++)
                 {
-                    text += "," + ((int[])value)[i].ToString();
+                    text += "," + ((object[])value)[i].ToString();
                 }
                 text += "]";
                 return text;

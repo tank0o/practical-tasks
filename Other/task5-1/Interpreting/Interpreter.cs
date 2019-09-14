@@ -221,18 +221,18 @@ namespace Lab5.Interpreting {
                 left = right;
                 right = t;
             }
-            int[] myInt;
+            object[] myInt;
             if (arrayIndex.range)
             {
-                myInt = new int[right-left+1];
+                myInt = new object[right-left+1];
                 for (int i =0; i < myInt.Length; i++)
                 {
-                    myInt[i] = ((int)(obj)[i+left]);
+                    myInt[i] = ((obj)[i+left]);
                 }
             }
             else
             {
-                myInt = new int[] { (int)(obj)[left] };
+                myInt = new object[] { (obj)[left] };
             }
             return myInt;
         }
