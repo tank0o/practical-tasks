@@ -275,7 +275,7 @@ namespace Lab5.Parsing
 				}
 				else if (SkipIf("["))
 				{
-					ArrayIndex parant = null;
+					IExpression parant = expression;
 					IExpression expressionleft;
 					IExpression expressionRight;
 
@@ -285,28 +285,15 @@ namespace Lab5.Parsing
 						expressionleft = new Number(pos, "0");
 						expressionRight = new Number(pos, "0");
 
-						if (SkipIf("]"))
-						{
-							if (parant == null)
-								parant = new ArrayIndex(identifierVariable.Name, null, null);
-							else parant = new ArrayIndex(parant, null, null);
-							continue;
-						}
 						expressionleft = ParseExpression();
 						if (SkipIf(":"))
 						{
 							expressionRight = ParseExpression();
 
-							if (parant == null)
-								parant = new ArrayIndex(identifierVariable.Name, expressionRight, expressionleft);
-							else parant = new ArrayIndex(parant, expressionRight, expressionleft);
+							parant = new ArrayIndex(parant, expressionRight, expressionleft);
 						}
 						else
-						{
-							if (parant == null)
-								parant = new ArrayIndex(identifierVariable.Name, expressionleft, expressionleft);
-							else parant = new ArrayIndex(parant, expressionleft, expressionleft);
-						}
+							parant = new ArrayIndex(parant, expressionleft, expressionleft);
 						Expect("]");
 
 					} while (SkipIf("["));

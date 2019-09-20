@@ -174,7 +174,7 @@ namespace Lab5.Interpreting
 			if (a.GetType() == typeof(object[]) && b.GetType() == typeof(object[]))
 			{
 				// == для массивов
-				return false;
+				return ComprasionArray((object[])a, (object[])b);
 			}
 			if (a == null || b == null)
 			{
@@ -206,7 +206,9 @@ namespace Lab5.Interpreting
 			if (a.GetType() == typeof(object[]) && b.GetType() == typeof(object[]))
 			{
 				// < для массивов
-				return false;
+				if (!ComprasionArray((object[])a, (object[])b))
+					throw MakeError(binary, "Тут ошибка в том, что она должна быть");
+				return true;
 			}
 			if (a == null && b == null)
 			{
@@ -221,6 +223,24 @@ namespace Lab5.Interpreting
 				return (int)a < (int)b;
 			}
 			throw MakeError(binary, $"Неверный тип операндов {a} {b}");
+		}
+		bool ComprasionArray(object[] a, object[] b)
+		{
+			if (a.Length != b.Length)
+				return false;
+			for (int i = 0; i < a.Length; i++)
+			{
+				if (a[i].GetType() != b[i].GetType())
+					return false;
+				if (a[i].GetType() == typeof(object[]))
+				{
+					if (!ComprasionArray((object[])a[i], (object[])b[i]))
+							return false;
+				}
+				else if (!a[i].Equals(b[i]))
+					return false;
+			}
+			return true;
 		}
 		#endregion
 		public object VisitParentheses(Parentheses parentheses)
@@ -278,21 +298,8 @@ namespace Lab5.Interpreting
 
 		public object VisitArrayIndex(ArrayIndex arrayIndex)
 		{
-			object[] objArray;
-			if (arrayIndex.variable != null)
-				objArray = (object[])variables[arrayIndex.variable];
-			else
-			{
-				object obj;
-				obj = ((object[])VisitArrayIndex(arrayIndex.array))[0];
-				if (obj == null || obj.GetType() != typeof(object[]))
-					objArray = new object[] { obj };
-				else
-					objArray = (object[])(obj);
-			}
+			object[] objArray = Calc<object[]>(arrayIndex.variable);
 
-			if (arrayIndex.l == null)
-				return objArray;
 			int left = (int)Calc(arrayIndex.l);
 			int right = (int)Calc(arrayIndex.r);
 
@@ -305,10 +312,7 @@ namespace Lab5.Interpreting
 			{
 				resArray[i] = ((objArray)[i + left]);
 			}
-			if (resArray.Length == 1)
-				return resArray[0];
-			else
-				return resArray;
+			return resArray;
 		}
 	}
 }

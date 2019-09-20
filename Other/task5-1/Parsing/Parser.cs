@@ -276,34 +276,27 @@ namespace Lab5.Parsing
 				}
 				else if (SkipIf("["))
 				{
-					ArrayIndex arrayI = null;
-					bool l, r;
 					IExpression expressionleft;
 					IExpression expressionRight;
 
 					var identifierVariable = expression as Identifier;
-					l = true;
-					r = true;
 					expressionleft = new Number(pos, "0");
 					expressionRight = new Number(pos, "-1");
 
 					if (SkipIf("]"))
 					{
-						arrayI = new ArrayIndex(identifierVariable.Name, expressionRight, l | r, expressionleft);
+						return new ArrayIndex(identifierVariable, expressionRight, expressionleft);
 					}
-
-					l = SkipIf(":");
-					if (!l)
+					if (!SkipIf(":"))
 					{
 						expressionleft = ParseExpression();
-						if (r = SkipIf(":"))
+						if (SkipIf(":"))
 						{
 							if (!SkipIf("]"))
 								expressionRight = ParseExpression();
 							else
 							{
-								arrayI = new ArrayIndex(identifierVariable.Name, expressionRight, l | r, expressionleft);
-								return arrayI;
+								return new ArrayIndex(identifierVariable, expressionRight, expressionleft);
 							}
 						}
 					}
@@ -313,8 +306,7 @@ namespace Lab5.Parsing
 							expressionRight = ParseExpression();
 					}
 					Expect("]");
-					arrayI = new ArrayIndex(identifierVariable.Name, expressionRight, l | r, expressionleft);
-					return arrayI;
+					return new ArrayIndex(identifierVariable, expressionRight, expressionleft);
 				}
 				else
 				{

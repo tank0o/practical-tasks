@@ -37,12 +37,13 @@ Primary:
 	ArrayIndex
 	ArraysExpr
 ArrayIndex:
-	Identifier '[' Expession '];'
-	Identifier '[' Expession ':' Expession '];'
+	Primary '[' Expession '];'
+	Primary '[' Expession ':' Expession '];'
 ArraysExpr:
 	'[' Arrays ']'
 Arrays:
 	Arrays ',' Expression
+	Expression
 Call:
 	Primary '(' Arguments? ')'
 Arguments:

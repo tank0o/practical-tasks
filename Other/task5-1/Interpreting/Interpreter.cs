@@ -204,7 +204,7 @@ namespace Lab5.Interpreting {
 
         public object VisitArrayIndex(ArrayIndex arrayIndex)
         {
-            object[] obj = (object[])variables[arrayIndex.variable];
+            object[] obj = (object[])variables[((Identifier)arrayIndex.variable).Name];
             int left = (int)Calc(arrayIndex.left);
             int right = (int)Calc(arrayIndex.right);
             if (left < 0)
@@ -222,10 +222,9 @@ namespace Lab5.Interpreting {
                 right = t;
             }
             object[] myInt;
-            if (arrayIndex.range)
+            if (left != right)
             {
 				myInt = new object[right >= obj.Length ? obj.Length - left : right - left + 1];
-				//myInt = new object[right-left+1];
 				for (int i =0; i < myInt.Length; i++)
                 {
                     myInt[i] = ((obj)[i+left]);

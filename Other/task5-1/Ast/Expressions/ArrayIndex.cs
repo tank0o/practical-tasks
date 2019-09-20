@@ -8,20 +8,18 @@ namespace Lab5.Ast.Statements
 {
     class ArrayIndex : IExpression
     {
-        public readonly string variable;
+        public readonly IExpression variable;
         public readonly IExpression right;
-        public readonly bool range;
         public readonly IExpression left;
 
-        public ArrayIndex(string variable, IExpression right, bool range, IExpression left)
-        {
-            this.variable = variable;
-            this.right = right;
-            this.range = range;
-            this.left = left;
-        }
+		public ArrayIndex(IExpression variable, IExpression right, IExpression left)
+		{
+			this.variable = variable;
+			this.right = right;
+			this.left = left;
+		}
 
-        public string FormattedString => $"{variable}[{right} {(range?(":"):(""))} {left}];";
+		public string FormattedString => $"{variable}[{right} {(left!=right?(":"):(""))} {left}];";
 
         public int Position => 0;
 

@@ -8,21 +8,13 @@ namespace Lab5.Ast.Statements
 {
 	class ArrayIndex : IExpression
 	{
-		public readonly string variable;
-		public readonly ArrayIndex array;
+		public readonly IExpression variable;
 		public readonly IExpression r;
 		public readonly IExpression l;
 
-		public ArrayIndex(string variable, IExpression r, IExpression l)
+		public ArrayIndex(IExpression variable, IExpression r, IExpression l)
 		{
 			this.variable = variable;
-			this.r = r;
-			this.l = l;
-		}
-
-		public ArrayIndex(ArrayIndex array, IExpression r, IExpression l)
-		{
-			this.array = array;
 			this.r = r;
 			this.l = l;
 		}
