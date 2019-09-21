@@ -19,7 +19,7 @@ namespace Lab5.Ast.Statements
 			this.left = left;
 		}
 
-		public string FormattedString => $"{variable}[{right} {(left!=right?(":"):(""))} {left}];";
+		public string FormattedString => $"{variable.FormattedString}[{left.FormattedString} {(left!=right?(":"+ right.FormattedString):(""))}]";
 
         public int Position => 0;
 
