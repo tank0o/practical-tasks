@@ -299,6 +299,8 @@ namespace Lab5.Parsing
 								return new ArrayIndex(identifierVariable, expressionRight, expressionleft);
 							}
 						}
+						else
+							expressionRight = expressionleft;
 					}
 					else
 					{
