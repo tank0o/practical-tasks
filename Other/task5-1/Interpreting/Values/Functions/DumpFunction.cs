@@ -42,7 +42,7 @@ namespace Lab5.Interpreting.Values.Functions
 
                 for (int i = 1; i < ((object[])value).Length; i++)
                 {
-                    text += "," + ((object[])value)[i].ToString();
+                    text += "," + ValueToString(((object[])value)[i]);
                 }
                 text += "]";
                 return text;

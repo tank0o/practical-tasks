@@ -323,6 +323,8 @@ namespace Lab5.Parsing
 		IExpression ParseArrayExpr()
 		{
 			List<IExpression> newObj = new List<IExpression>();
+			if (SkipIf("]"))
+				return new ArrayExpr(newObj);
 			do
 			{
 				newObj.Add(ParseExpression());
