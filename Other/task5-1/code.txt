@@ -1,8 +1,9 @@
 a = [3+2,2,4,5];
 dump(a[1+2:]);
 dump(a[1]);
-dump(a[0:16]);
+dump(a[10:16+1]);
 dump(a[1:]);
 dump(a[:3]);
 dump(a[2:2]);
 dump(a[-3:-2]);
+dump(a[7:9]);
