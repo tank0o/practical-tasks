@@ -12,6 +12,12 @@ namespace Lab5.Ast.Statements
 		public readonly IExpression r;
 		public readonly IExpression l;
 
+		public ArrayIndex(IExpression variable, IExpression l)
+		{
+			this.variable = variable;
+			this.l = l;
+		}
+
 		public ArrayIndex(IExpression variable, IExpression r, IExpression l)
 		{
 			this.variable = variable;

@@ -174,7 +174,7 @@ namespace Lab5.Interpreting
 			if (a.GetType() == typeof(object[]) && b.GetType() == typeof(object[]))
 			{
 				// == для массивов
-				return ComprasionArray((object[])a, (object[])b);
+				return CalcEqualArray((object[])a, (object[])b,binary);
 			}
 			if (a == null || b == null)
 			{
@@ -198,6 +198,41 @@ namespace Lab5.Interpreting
 			}
 			throw MakeError(binary, $"Неверный тип операндов {a} {b}");
 		}
+		bool CalcEqualArray(object a, object b, Binary binary)
+		{
+			if (a == null || b == null)
+			{
+				return (a == null) == (b == null);
+			}
+			if (a.GetType() != b.GetType())
+			{
+				return false;
+			}
+			if (a is int)
+			{
+				return (int)a == (int)b;
+			}
+			if (a is bool)
+			{
+				return (bool)a == (bool)b;
+			}
+			if (a is IReferenceEquatable)
+			{
+				return a == b;
+			}
+			if (a.GetType() == typeof(object[]) && b.GetType() == typeof(object[]))
+			{
+				object[] arrayA = (object[])a;
+				object[] arrayB = (object[])b;
+				for (int i = 0; i < arrayA.Length; i++)
+				{
+					if (!CalcEqualArray(arrayA[i], arrayB[i], binary))
+						return false;
+				}
+				return true;
+			}
+			return false;
+		}
 		object CalcLess(Binary binary)
 		{
 			Assert(binary.Operator == BinaryOperator.Less);
@@ -206,9 +241,7 @@ namespace Lab5.Interpreting
 			if (a.GetType() == typeof(object[]) && b.GetType() == typeof(object[]))
 			{
 				// < для массивов
-				if (!ComprasionArray((object[])a, (object[])b))
-					throw MakeError(binary, "Тут ошибка в том, что она должна быть");
-				return true;
+				return CalcLessArray(a, b,binary);
 			}
 			if (a == null && b == null)
 			{
@@ -224,23 +257,32 @@ namespace Lab5.Interpreting
 			}
 			throw MakeError(binary, $"Неверный тип операндов {a} {b}");
 		}
-		bool ComprasionArray(object[] a, object[] b)
+		bool CalcLessArray(object a, object b, Binary binary)
 		{
-			if (a.Length != b.Length)
-				return false;
-			for (int i = 0; i < a.Length; i++)
+			if (a == null && b == null)
 			{
-				if (a[i].GetType() != b[i].GetType())
-					return false;
-				if (a[i].GetType() == typeof(object[]))
-				{
-					if (!ComprasionArray((object[])a[i], (object[])b[i]))
-							return false;
-				}
-				else if (!a[i].Equals(b[i]))
-					return false;
+				return false;
 			}
-			return true;
+			if (a is bool && b is bool)
+			{
+				return !(bool)a && (bool)b;
+			}
+			if (a is int && b is int)
+			{
+				return (int)a < (int)b;
+			}
+			if (a.GetType() == typeof(object[]) && b.GetType() == typeof(object[]))
+			{
+				object[] arrayA = (object[])a;
+				object[] arrayB = (object[])b;
+				for (int i = 0; i < arrayA.Length; i++)
+				{
+					if (CalcLessArray(arrayA[i], arrayB[i], binary))
+						return true;
+				}
+				return false;
+			}
+			throw MakeError(binary, $"Неверный тип операндов {a} {b}");
 		}
 		#endregion
 		public object VisitParentheses(Parentheses parentheses)
@@ -301,13 +343,13 @@ namespace Lab5.Interpreting
 			object[] objArray = Calc<object[]>(arrayIndex.variable);
 
 			int left = (int)Calc(arrayIndex.l);
-			int right = (int)Calc(arrayIndex.r);
+			int right;
+			if(arrayIndex.r != null)
+				right = (int)Calc(arrayIndex.r);
+			else
+				return ((objArray)[left]);
 
-			if (left != right) right--;
-
-			object[] resArray;
-
-			resArray = new object[right - left + 1];
+			object[] resArray = new object[right - left];
 			for (int i = 0; i < resArray.Length; i++)
 			{
 				resArray[i] = ((objArray)[i + left]);

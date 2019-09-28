@@ -282,8 +282,8 @@ namespace Lab5.Parsing
 					var identifierVariable = expression as Identifier;
 					do
 					{
-						expressionleft = new Number(pos, "0");
-						expressionRight = new Number(pos, "0");
+						expressionleft = null;
+						expressionRight = null;
 
 						expressionleft = ParseExpression();
 						if (SkipIf(":"))
@@ -293,7 +293,7 @@ namespace Lab5.Parsing
 							parant = new ArrayIndex(parant, expressionRight, expressionleft);
 						}
 						else
-							parant = new ArrayIndex(parant, expressionleft, expressionleft);
+							parant = new ArrayIndex(parant, expressionleft);
 						Expect("]");
 
 					} while (SkipIf("["));

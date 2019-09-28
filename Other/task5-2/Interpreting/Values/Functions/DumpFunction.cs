@@ -34,6 +34,8 @@ namespace Lab5.Interpreting.Values.Functions
 			}
 			if (value is object[])
 			{
+				if (((object[])value).Length == 0)
+					return "[]";
 				string text = "[" + ValueToString(((object[])value)[0]);
 
 				for (int i = 1; i < ((object[])value).Length; i++)
