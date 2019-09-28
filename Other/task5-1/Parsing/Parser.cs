@@ -3,7 +3,6 @@ using Lab5.Ast.Expressions;
 using Lab5.Ast.Statements;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 namespace Lab5.Parsing
 {
@@ -280,12 +279,13 @@ namespace Lab5.Parsing
 					IExpression expressionRight;
 
 					var identifierVariable = expression as Identifier;
-					expressionleft = new Number(pos, "0");
-					expressionRight = new Number(pos, "-1");
+					expressionleft = null;
+					expressionRight = null;
+
 
 					if (SkipIf("]"))
 					{
-						return new ArrayIndex(identifierVariable, expressionRight, expressionleft);
+						return new ArrayIndex(identifierVariable, expressionleft, expressionRight);
 					}
 					if (!SkipIf(":"))
 					{
@@ -296,11 +296,14 @@ namespace Lab5.Parsing
 								expressionRight = ParseExpression();
 							else
 							{
-								return new ArrayIndex(identifierVariable, expressionRight, expressionleft);
+								return new ArrayIndex(identifierVariable, expressionleft, expressionRight);
 							}
 						}
 						else
-							expressionRight = expressionleft;
+						{
+							Expect("]");
+							return new ArrayIndex(identifierVariable, expressionleft);
+						}
 					}
 					else
 					{
@@ -308,7 +311,7 @@ namespace Lab5.Parsing
 							expressionRight = ParseExpression();
 					}
 					Expect("]");
-					return new ArrayIndex(identifierVariable, expressionRight, expressionleft);
+					return new ArrayIndex(identifierVariable, expressionleft, expressionRight);
 				}
 				else
 				{
