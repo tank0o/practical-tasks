@@ -171,32 +171,8 @@ namespace Lab5.Interpreting
 			Assert(binary.Operator == BinaryOperator.Equal);
 			var a = Calc(binary.Left);
 			var b = Calc(binary.Right);
-			if (a.GetType() == typeof(object[]) && b.GetType() == typeof(object[]))
-			{
-				// == для массивов
-				return CalcEqualArray((object[])a, (object[])b,binary);
-			}
-			if (a == null || b == null)
-			{
-				return (a == null) == (b == null);
-			}
-			if (a.GetType() != b.GetType())
-			{
-				return false;
-			}
-			if (a is int)
-			{
-				return (int)a == (int)b;
-			}
-			if (a is bool)
-			{
-				return (bool)a == (bool)b;
-			}
-			if (a is IReferenceEquatable)
-			{
-				return a == b;
-			}
-			throw MakeError(binary, $"Неверный тип операндов {a} {b}");
+
+			return CalcEqualArray((object[])a, (object[])b, binary);
 		}
 		bool CalcEqualArray(object a, object b, Binary binary)
 		{
@@ -238,24 +214,9 @@ namespace Lab5.Interpreting
 			Assert(binary.Operator == BinaryOperator.Less);
 			var a = Calc(binary.Left);
 			var b = Calc(binary.Right);
-			if (a.GetType() == typeof(object[]) && b.GetType() == typeof(object[]))
-			{
-				// < для массивов
-				return CalcLessArray(a, b,binary);
-			}
-			if (a == null && b == null)
-			{
-				return false;
-			}
-			if (a is bool && b is bool)
-			{
-				return !(bool)a && (bool)b;
-			}
-			if (a is int && b is int)
-			{
-				return (int)a < (int)b;
-			}
-			throw MakeError(binary, $"Неверный тип операндов {a} {b}");
+
+			// < для массивов
+			return CalcLessArray(a, b, binary);
 		}
 		bool CalcLessArray(object a, object b, Binary binary)
 		{
@@ -344,7 +305,7 @@ namespace Lab5.Interpreting
 
 			int left = (int)Calc(arrayIndex.l);
 			int right;
-			if(arrayIndex.r != null)
+			if (arrayIndex.r != null)
 				right = (int)Calc(arrayIndex.r);
 			else
 				return ((objArray)[left]);
