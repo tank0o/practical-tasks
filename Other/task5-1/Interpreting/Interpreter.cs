@@ -245,7 +245,8 @@ namespace Lab5.Interpreting
 
 		public object VisitArrayIndex(ArrayIndex arrayIndex)
 		{
-			object[] obj = (object[])variables[((Identifier)arrayIndex.variable).Name];
+			object[] obj = Calc<object[]>(arrayIndex.variable);
+
 			int left = (arrayIndex.left == null ? 0 : (int)Calc<int>(arrayIndex.left));
 			int right = (arrayIndex.right == null ? -1 : (int)Calc(arrayIndex.right));
 			if (left < 0)
@@ -262,20 +263,20 @@ namespace Lab5.Interpreting
 			}
 			if (left > obj.Length)
 				return new object[0];
-			object[] myInt;
+			object[] myObjs;
 			if (arrayIndex.range)
 			{
-				myInt = new object[right >= obj.Length ? obj.Length - left : right - left + 1];
-				for (int i = 0; i < myInt.Length; i++)
+				myObjs = new object[right >= obj.Length ? obj.Length - left : right - left + 1];
+				for (int i = 0; i < myObjs.Length; i++)
 				{
-					myInt[i] = ((obj)[i + left]);
+					myObjs[i] = ((obj)[i + left]);
 				}
 			}
 			else
 			{
-				myInt = new object[] { (obj)[left] };
+				return (obj)[left];
 			}
-			return myInt;
+			return myObjs;
 		}
 	}
 }

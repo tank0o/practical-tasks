@@ -275,43 +275,12 @@ namespace Lab5.Parsing
 				}
 				else if (SkipIf("["))
 				{
-					IExpression expressionleft;
-					IExpression expressionRight;
-
-					var identifierVariable = expression as Identifier;
-					expressionleft = null;
-					expressionRight = null;
-
-
-					if (SkipIf("]"))
+					IExpression array =  ParseIndexArray(expression);
+					while (SkipIf("["))
 					{
-						return new ArrayIndex(identifierVariable, expressionleft, expressionRight);
+						array = ParseIndexArray(array);
 					}
-					if (!SkipIf(":"))
-					{
-						expressionleft = ParseExpression();
-						if (SkipIf(":"))
-						{
-							if (!SkipIf("]"))
-								expressionRight = ParseExpression();
-							else
-							{
-								return new ArrayIndex(identifierVariable, expressionleft, expressionRight);
-							}
-						}
-						else
-						{
-							Expect("]");
-							return new ArrayIndex(identifierVariable, expressionleft);
-						}
-					}
-					else
-					{
-						if (!SkipIf("]"))
-							expressionRight = ParseExpression();
-					}
-					Expect("]");
-					return new ArrayIndex(identifierVariable, expressionleft, expressionRight);
+					return array;
 				}
 				else
 				{
@@ -320,9 +289,49 @@ namespace Lab5.Parsing
 			}
 			return expression;
 		}
+		IExpression ParseIndexArray(IExpression expression) //------------------
+		{
+			IExpression expressionleft;
+			IExpression expressionRight;
+
+			expressionleft = null;
+			expressionRight = null;
+
+
+			if (SkipIf("]"))
+			{
+				return new ArrayIndex(expression, expressionleft, expressionRight);
+			}
+			if (!SkipIf(":"))
+			{
+				expressionleft = ParseExpression();
+				if (SkipIf(":"))
+				{
+					if (!SkipIf("]"))
+						expressionRight = ParseExpression();
+					else
+					{
+						return new ArrayIndex(expression, expressionleft, expressionRight);
+					}
+				}
+				else
+				{
+					Expect("]");
+					return new ArrayIndex(expression, expressionleft);
+				}
+			}
+			else
+			{
+				if (!SkipIf("]"))
+					expressionRight = ParseExpression();
+			}
+			Expect("]");
+			return new ArrayIndex(expression, expressionleft, expressionRight);
+		}
 		IExpression ParseArrayExpr()
 		{
 			List<IExpression> newObj = new List<IExpression>();
+			IExpression arrayExpr;
 			if (SkipIf("]"))
 				return new ArrayExpr(newObj);
 			do
@@ -330,8 +339,14 @@ namespace Lab5.Parsing
 				newObj.Add(ParseExpression());
 			} while (SkipIf(","));
 			Expect("]");
-			return new ArrayExpr(newObj);
 
+			arrayExpr = new ArrayExpr(newObj);
+
+			while (SkipIf("["))
+			{
+				arrayExpr = ParseIndexArray(arrayExpr);
+			}
+			return arrayExpr;
 		}
 		IExpression ParsePrimitive()
 		{

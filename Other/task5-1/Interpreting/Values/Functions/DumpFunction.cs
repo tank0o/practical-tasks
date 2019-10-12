@@ -34,19 +34,17 @@ namespace Lab5.Interpreting.Values.Functions
             }
             if (value is object[])
             {
-                if (((object[])value).Length == 1)
-                    return ((object[])value)[0].ToString();
 				if (((object[])value).Length == 0)
-                    return "[]";
-                string text = "[" + ((object[])value)[0].ToString();
+					return "[]";
+				string text = "[" + ValueToString(((object[])value)[0]);
 
-                for (int i = 1; i < ((object[])value).Length; i++)
-                {
-                    text += "," + ValueToString(((object[])value)[i]);
-                }
-                text += "]";
-                return text;
-            }
+				for (int i = 1; i < ((object[])value).Length; i++)
+				{
+					text += "," + ValueToString(((object[])value)[i]);
+				}
+				text += "]";
+				return text;
+			}
             throw new Exception($"Неизвестный тип значения {value}");
         }
     }
