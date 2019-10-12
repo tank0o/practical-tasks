@@ -18,14 +18,14 @@ namespace Lab5.Ast.Statements
 			this.l = l;
 		}
 
-		public ArrayIndex(IExpression variable, IExpression r, IExpression l)
+		public ArrayIndex(IExpression variable, IExpression l, IExpression r)
 		{
 			this.variable = variable;
 			this.r = r;
 			this.l = l;
 		}
 
-		public string FormattedString => $"{variable}[{r} {(l != r ? (":") : (""))} {l}];";
+		public string FormattedString => $"{variable.FormattedString}[{l.FormattedString} {(l != r  ? (":") : (""))} {(r != null ? (r.FormattedString) : (""))}]";
 
 		public int Position => 0;
 

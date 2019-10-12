@@ -36,11 +36,11 @@ Primary:
 	Primitive
 	ArrayIndex
 ArrayIndex:
-	Identifier '[];'
-	Identifier '[' Expession '];'
-	Identifier '[' ':' Expession '];'
-	Identifier '[' Expession ':' '];'
-	Identifier '[' Expession ':' Expession '];'
+	Primitive '[];'
+	Primitive '[' Expession '];'
+	Primitive '[' ':' Expession '];'
+	Primitive '[' Expession ':' '];'
+	Primitive '[' Expession ':' Expession '];'
 ArraysExpr:
 	'[' Arrays ']'
 Arrays:

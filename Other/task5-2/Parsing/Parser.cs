@@ -279,25 +279,19 @@ namespace Lab5.Parsing
 					IExpression expressionleft;
 					IExpression expressionRight;
 
-					var identifierVariable = expression as Identifier;
-					do
+					expressionleft = null;
+					expressionRight = null;
+
+					expressionleft = ParseExpression();
+					if (SkipIf(":"))
 					{
-						expressionleft = null;
-						expressionRight = null;
+						expressionRight = ParseExpression();
 
-						expressionleft = ParseExpression();
-						if (SkipIf(":"))
-						{
-							expressionRight = ParseExpression();
-
-							parant = new ArrayIndex(parant, expressionRight, expressionleft);
-						}
-						else
-							parant = new ArrayIndex(parant, expressionleft);
-						Expect("]");
-
-					} while (SkipIf("["));
-					return parant;
+						expression = new ArrayIndex(expression, expressionleft, expressionRight);
+					}
+					else
+						expression = new ArrayIndex(expression, expressionleft);
+					Expect("]");
 				}
 				else
 				{

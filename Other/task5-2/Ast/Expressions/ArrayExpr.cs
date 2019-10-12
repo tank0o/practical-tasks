@@ -15,7 +15,7 @@ namespace Lab5.Ast.Expressions
             Expr = expr;
         }
 
-        public string FormattedString => $"[{string.Join(",", Expr.Select(x => x.FormattedString))}]\n";
+        public string FormattedString => $"[{string.Join(",", Expr.Select(x => x.FormattedString))}]";
 
         public int Position => 0;
 

@@ -200,11 +200,13 @@ namespace Lab5.Interpreting
 			{
 				object[] arrayA = (object[])a;
 				object[] arrayB = (object[])b;
-				for (int i = 0; i < arrayA.Length; i++)
+				for (int i = 0; i < arrayA.Length && i<arrayB.Length; i++)
 				{
 					if (!CalcEqualArray(arrayA[i], arrayB[i], binary))
 						return false;
 				}
+				if (arrayA != arrayB)
+					return false;
 				return true;
 			}
 			return false;
@@ -230,18 +232,37 @@ namespace Lab5.Interpreting
 			}
 			if (a is int && b is int)
 			{
-				return (int)a < (int)b;
+				return (int)a <= (int)b;
 			}
 			if (a.GetType() == typeof(object[]) && b.GetType() == typeof(object[]))
 			{
 				object[] arrayA = (object[])a;
 				object[] arrayB = (object[])b;
-				for (int i = 0; i < arrayA.Length; i++)
+				int i = 0;
+				if (arrayA.Length < arrayB.Length)
 				{
-					if (CalcLessArray(arrayA[i], arrayB[i], binary))
-						return true;
+					while (i < arrayA.Length)
+					{
+						if (!CalcLessArray(arrayA[i], arrayB[i], binary))
+							return false;
+						i++;
+					}
+					return true;
 				}
-				return false;
+				else if(arrayA.Length > arrayB.Length)
+				{
+					return false;
+				}
+				else
+				{
+					while (i < arrayB.Length)
+					{
+						if (!CalcLessArray(arrayA[i], arrayB[i], binary))
+							return false;
+						i++;
+					}
+					return CalcLessArray(arrayA[i-1], arrayB[i-1], binary);
+				}
 			}
 			throw MakeError(binary, $"Неверный тип операндов {a} {b}");
 		}
