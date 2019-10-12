@@ -25,7 +25,7 @@ namespace Lab5.Ast.Statements
 			this.l = l;
 		}
 
-		public string FormattedString => $"{variable.FormattedString}[{l.FormattedString} {(l != r  ? (":") : (""))} {(r != null ? (r.FormattedString) : (""))}]";
+		public string FormattedString => $"{variable.FormattedString}[{l.FormattedString}{(r != null && l != r  ? (":"+ (r.FormattedString)) : (""))}]";
 
 		public int Position => 0;
 
