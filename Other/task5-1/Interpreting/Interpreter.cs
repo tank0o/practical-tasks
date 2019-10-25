@@ -247,8 +247,8 @@ namespace Lab5.Interpreting
 		{
 			object[] obj = Calc<object[]>(arrayIndex.variable);
 
-			int left = (arrayIndex.left == null ? 0 : (int)Calc<int>(arrayIndex.left));
-			int right = (arrayIndex.right == null ? -1 : (int)Calc(arrayIndex.right));
+			int left = (arrayIndex.left == null ? 0 : Calc<int>(arrayIndex.left));
+			int right = (arrayIndex.right == null ? -1 : Calc<int>(arrayIndex.right));
 			if (left < 0)
 			{
 				left = obj.Length + left;
@@ -266,7 +266,10 @@ namespace Lab5.Interpreting
 			object[] myObjs;
 			if (arrayIndex.range)
 			{
-				myObjs = new object[right >= obj.Length ? obj.Length - left : right - left + 1];
+				if (right >= obj.Length)
+					myObjs = new object[obj.Length - left];
+				else
+					myObjs = new object[right - left + 1];
 				for (int i = 0; i < myObjs.Length; i++)
 				{
 					myObjs[i] = ((obj)[i + left]);

@@ -25,9 +25,17 @@ namespace Lab5.Ast.Statements
 			this.l = l;
 		}
 
-		public string FormattedString => $"{variable.FormattedString}[{l.FormattedString}{(r != null && l != r  ? (":"+ (r.FormattedString)) : (""))}]";
-
+		public string FormattedString => MyFormattedString();
 		public int Position => 0;
+
+		string MyFormattedString()
+		{
+			string text = variable.FormattedString + '[' + l.FormattedString;
+			if(r!=null && l != r)
+				text += ":" + (r.FormattedString);
+			text += ']';
+			return text;
+		}
 
 		public void Accept(IExpressionVisitor visitor) => visitor.VisitArrayIndex(this);
 		public T Accept<T>(IExpressionVisitor<T> visitor) => visitor.VisitArrayIndex(this);
